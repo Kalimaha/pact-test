@@ -11,8 +11,7 @@ setup(
     long_description=open('README.md').read(),
     description='Python implementation for Pact (http://pact.io/)',
     install_requires=[],
-    # setup_requires=['pytest-runner'],
-    tests_require=['nose2'],
-    test_suite='nose2.collector.collector',
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
     url='https://github.com/Kalimaha/pypact/'
 )

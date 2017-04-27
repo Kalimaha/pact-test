@@ -6,4 +6,3 @@ pypact.egg-info/
 tests/__pycache__/
 .eggs/
 .coverage
-*.egg
