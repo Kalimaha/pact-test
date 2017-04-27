@@ -12,6 +12,6 @@ setup(
     description='Python implementation for Pact (http://pact.io/)',
     install_requires=[],
     setup_requires=['pytest-runner'],
-    tests_require=['pytest'],
+    tests_require=['pytest', 'pytest-sugar'],
     url='https://github.com/Kalimaha/pypact/'
 )
