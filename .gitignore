@@ -1,0 +1,13 @@
+*.pyc
+.cache/
+.idea/
+build/
+pypact.egg-info/
+tests/__pycache__/
+.eggs/
+.coverage
+*.log
+*.egg
+*.iml
+pytest_pact.egg-info/
+pytest_pact/__pycache__
