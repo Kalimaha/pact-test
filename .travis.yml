@@ -1,12 +1,16 @@
 language: python
 python:
   - 2.7
+  - 3.3
+  - 3.4
+  - 3.5
+  - 3.6
 install:
   - "pip install -r requirements.txt"
-  - "pip install pytest pytest-cov pytest-sugar"
+  - "pip install pytest pytest-cov"
   - "pip install coveralls"
   - "pip install -e ."
 script:
-  - py.test --cov pypact --cov-report term-missing
+  - py.test --cov pact --cov-report term-missing
 after_success:
   - coveralls

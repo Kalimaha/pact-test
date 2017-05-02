@@ -1,2 +1,2 @@
-pytest
-pytest-sugar
+pytest>=3.0
+pytest-runner
