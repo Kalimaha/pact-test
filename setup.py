@@ -12,11 +12,11 @@ setup(
     description='Python implementation for Pact (http://pact.io/)',
     install_requires=[],
     setup_requires=['pytest-runner'],
-    tests_require=['pytest', 'pytest-sugar'],
+    tests_require=['pytest'],
     url='https://github.com/Kalimaha/pytest-pact/',
     entry_points = {
         'pytest11': [
-            'pytest-pact = pytest_pact.PyPact',
+            'pytest-pact = pact',
         ]
     }
 )

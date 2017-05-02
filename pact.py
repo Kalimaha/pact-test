@@ -15,6 +15,7 @@ honours_pact_with = pytest.mark.honours_pact_with
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_pyfunc_call(pyfuncitem):
+    print('SO???')
     # print(describe_consumer_pact(pyfuncitem))
 
     # pypact = PyPact()
@@ -42,6 +43,7 @@ class PyPactProvider(object):
 
 
 def describe_consumer_pact(pyfuncitem):
+    print('HALLO???')
     s = ''
     s += 'Given ' + read_marker(pyfuncitem, 'given') + ', '
     s += 'upon receiving ' + read_marker(pyfuncitem, 'upon_receiving') + ' '

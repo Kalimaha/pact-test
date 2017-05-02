@@ -1,4 +1,4 @@
-from pytest_pact.PyPact import *
+from pact import *
 
 
 def test_read_existing_marker():

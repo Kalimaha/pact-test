@@ -1,4 +1,4 @@
-from pytest_pact.PyPact import *
+from pact import *
 
 
 @base_uri('localhost:1234')
