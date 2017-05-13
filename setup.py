@@ -8,7 +8,7 @@ setup(
     author_email='guido.barbaglia@gmail.com',
     packages=find_packages(),
     license='LICENSE.txt',
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
     description='Python implementation for Pact (http://pact.io/)',
     install_requires=[],
     setup_requires=['pytest-runner'],
