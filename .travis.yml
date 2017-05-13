@@ -7,10 +7,9 @@ python:
   - 3.6
 install:
   - "pip install -r requirements.txt"
-  - "pip install pytest pytest-cov pytest-pep8 pytest-sugar"
-  - "pip install coveralls"
+  - "pip install pytest pytest-cov pytest-pep8 pytest-sugar codecov"
   - "pip install -e ."
 script:
-  - py.test --cov pact --cov-report term-missing
+  - py.test --cov=./
 after_success:
-  - coveralls
+  - codecov
