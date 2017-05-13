@@ -1,12 +1,12 @@
 import pytest
-from pytest_pact.pytest_utils import read_marker
+from pytest_pact.utils.pytest_utils import read_marker
 from pytest_pact.pact_markers import CONSUMER
 from pytest_pact.pact_markers import PROVIDER
 from pytest_pact.pact_markers import HAS_PACT_WITH
 from pytest_pact.pact_markers import HONOURS_PACT_WITH
-from pytest_pact.standard_executor import StandardExecutor
-from pytest_pact.consumer_executor import ConsumerExecutor
-from pytest_pact.provider_executor import ProviderExecutor
+from pytest_pact.executors.standard_executor import StandardExecutor
+from pytest_pact.executors.consumer_executor import ConsumerExecutor
+from pytest_pact.executors.provider_executor import ProviderExecutor
 
 
 def executor(pyfuncitem):

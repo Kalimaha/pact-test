@@ -1,4 +1,4 @@
-from pytest_pact.executor import Executor
+from pytest_pact.executors.executor import Executor
 from pytest_pact.pact_markers import SERVICE_CONSUMER
 from pytest_pact.pact_markers import HAS_PACT_WITH
 from pytest_pact.pact_markers import BASE_URI

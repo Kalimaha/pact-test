@@ -1,19 +1,16 @@
-from pytest_pact.pytest_utils import *
+from pytest_pact.utils.pytest_utils import *
 
 
 def test_read_existing_marker():
-    expected_marker = 'some books exist'
-
     class FakeMarker(object):
-        args = [expected_marker]
+        args = ['My Value']
 
     class FakePyFuncItem(object):
         def get_marker(self, marker_name):
             return FakeMarker()
 
     pyfuncitem = FakePyFuncItem()
-    marker_name = 'given'
-    assert read_marker(pyfuncitem, marker_name) == expected_marker
+    assert read_marker(pyfuncitem, 'My Marker') == 'My Value'
 
 
 def test_read_non_existing_marker():
@@ -23,5 +20,4 @@ def test_read_non_existing_marker():
             return None
 
     pyfuncitem = FakePyFuncItem()
-    marker_name = 'given'
-    assert read_marker(pyfuncitem, marker_name) is None
+    assert read_marker(pyfuncitem, 'My Marker') is None

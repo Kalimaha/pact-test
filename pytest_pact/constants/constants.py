@@ -1,0 +1,10 @@
+state = pytest.mark.state
+given = pytest.mark.given
+base_uri = pytest.mark.base_uri
+pact_uri = pytest.mark.pact_uri
+with_request = pytest.mark.with_request
+has_pact_with = pytest.mark.has_pact_with
+upon_receiving = pytest.mark.upon_receiving
+will_respond_with = pytest.mark.will_respond_with
+service_consumer = pytest.mark.service_consumer
+honours_pact_with = pytest.mark.honours_pact_with
