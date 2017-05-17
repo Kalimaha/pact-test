@@ -6,8 +6,7 @@ python:
   - 3.5
   - 3.6
 install:
-  - "pip install -r requirements.txt"
-  - "pip install pytest pytest-cov pytest-pep8 pytest-sugar codecov"
+  - "pip install pytest pytest-cov pytest-pep8 pytest-sugar pytest-mock codecov"
   - "pip install -e ."
 script:
   - py.test --cov=./

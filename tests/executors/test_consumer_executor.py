@@ -1,4 +1,4 @@
-from pytest_pact.provider_executor import ProviderExecutor
+from pytest_pact.executors.consumer_executor import ConsumerExecutor
 
 
 def test_valid_setup():
@@ -10,7 +10,7 @@ def test_valid_setup():
         def get_marker(self, marker_name):
             return FakeMarker(marker_name)
     pyfuncitem = FakePyFuncItem()
-    assert ProviderExecutor(pyfuncitem).is_valid()
+    assert ConsumerExecutor(pyfuncitem).is_valid()
 
 
 def test_missing_markers():
@@ -22,7 +22,7 @@ def test_missing_markers():
         def get_marker(self, marker_name):
             return FakeMarker(marker_name) if marker_name is 'state' else None
     pyfuncitem = FakePyFuncItem()
-    assert ProviderExecutor(pyfuncitem).is_valid() is False
+    assert ConsumerExecutor(pyfuncitem).is_valid() is False
 
 
 def test_null_values():
@@ -34,4 +34,4 @@ def test_null_values():
         def get_marker(self, marker_name):
             return FakeMarker(marker_name)
     pyfuncitem = FakePyFuncItem()
-    assert ProviderExecutor(pyfuncitem).is_valid() is False
+    assert ConsumerExecutor(pyfuncitem).is_valid() is False
