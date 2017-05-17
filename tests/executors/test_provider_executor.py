@@ -1,7 +1,167 @@
 import os
 import imp
+import json
 import pytest
+import urllib.request
+from urllib.request import Request
 from pytest_pact.executors.provider_executor import ProviderExecutor
+
+
+def test_verify_pact(mocker):
+    class Marker(object):
+        args = ['a menu exists']
+
+    class Item(object):
+        def get_marker(self, name):
+            return Marker()
+
+    pact_file = simple_pact()
+    executor = ProviderExecutor(Item())
+    mocker.patch.object(executor, 'fetch_pact_file')
+    mocker.patch.object(executor, 'verify_interaction')
+    executor.fetch_pact_file.return_value = pact_file
+    executor.verify_interaction.return_value = True
+
+    assert executor.verify_pact() is True
+
+
+def test_verify_interaction(monkeypatch):
+    class FakeReader(object):
+        def decode(self):
+            return str({
+                "id": 42,
+                "name": "Spam, Eggs and Bacon",
+                "ingredients": ["spam", "eggs", "bacon"]
+            }).replace("'", "\"")
+
+    class FakeResponse(object):
+        status = 200
+        reason = 'OK'
+
+        def getheaders(self):
+            return [
+                ("Content-Type", "application/json"),
+                ("Pragma", "no-cache")
+            ]
+
+        def read(self):
+            return FakeReader()
+
+    executor = ProviderExecutor(None)
+    interaction = simple_pact()['interactions'][0]
+
+    def urlopen(url):
+        return FakeResponse()
+    monkeypatch.setattr(urllib.request, 'urlopen', urlopen)
+
+    assert executor.verify_interaction(interaction) is True
+
+
+def test_body_matches():
+    executor = ProviderExecutor(None)
+    consumer_body = {"name": "Spam, Eggs and Bacon"}
+    response_body = {
+        "name": "Spam, Eggs and Bacon",
+        "ingredients": ["spam", "eggs", "bacon"],
+        "vegan": False,
+        "vegetarian": False
+    }
+
+    assert executor.body_matches(consumer_body, response_body) is True
+
+
+def test_headers_match():
+    executor = ProviderExecutor(None)
+    consumer_headers = {
+        "Content-Type": "application/json",
+        "Pragma": "no-cache"
+    }
+    response_headers = [
+        ('Content-Type', 'application/json'),
+        ('Content-Length', '292'),
+        ('Access-Control-Allow-Credentials', 'true'),
+        ('Pragma', 'no-cache')
+    ]
+
+    assert executor.headers_match(consumer_headers, response_headers) is True
+
+
+def test_reason_matches():
+    executor = ProviderExecutor(None)
+    consumer_reason = "I'm a teapot."
+    response_reason = "I'm a teapot."
+
+    assert executor.reason_matches(consumer_reason, response_reason) is True
+
+
+def test_status_matches():
+    executor = ProviderExecutor(None)
+    consumer_status = 418
+    response_status = 418
+
+    assert executor.status_matches(consumer_status, response_status) is True
+
+
+def test_build_request():
+    executor = ProviderExecutor(None)
+    consumer_request = {
+        "method": "POST",
+        "path": "/menu/42",
+        "query": "?vegan=false",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": {
+            "alligator": {
+                "name": "Mary"
+            }
+        }
+    }
+    request = executor.build_request(consumer_request)
+    assert request.get_method() == 'POST'
+    assert request.full_url == 'http://localhost:1234/menu/42?vegan=false'
+    assert request.headers == {"Content-type": "application/json"}
+    assert request.data == {"alligator": {"name": "Mary"}}
+
+
+def test_load_interactions():
+    class Marker(object):
+        args = [os.getcwd() + '/tests/resources/simple_pact.json']
+
+    class Item(object):
+        def get_marker(self, name):
+            return Marker()
+
+    executor = ProviderExecutor(Item())
+    expected_interactions = simple_pact()['interactions']
+
+    assert executor.load_interactions() == expected_interactions
+
+
+def test_fetch_remote_pact_file(monkeypatch):
+    class Marker(object):
+        args = ['http://test.com/simple_pact.json']
+
+    class Item(object):
+        def get_marker(self, name):
+            return Marker()
+
+    def url_open(_):
+        return open(os.getcwd() + '/tests/resources/simple_pact.json')
+    monkeypatch.setattr(urllib.request, 'urlopen', url_open)
+
+    assert ProviderExecutor(Item()).fetch_pact_file() == simple_pact()
+
+
+def test_fetch_local_pact_file():
+    class Marker(object):
+        args = [os.getcwd() + '/tests/resources/simple_pact.json']
+
+    class Item(object):
+        def get_marker(self, name):
+            return Marker()
+
+    assert ProviderExecutor(Item()).fetch_pact_file() == simple_pact()
 
 
 def test_set_up(mocker):
@@ -12,7 +172,7 @@ def test_set_up(mocker):
     pact_helper = PactHelper()
     mocker.spy(pact_helper, 'set_up')
 
-    executor = ProviderExecutor(FakePyFuncItem())
+    executor = ProviderExecutor(None)
     mocker.patch.object(executor, 'set_up', new=pact_helper.set_up)
 
     executor.set_up()
@@ -35,7 +195,7 @@ def test_tear_down(mocker):
     assert pact_helper.tear_down.call_count == 1
 
 
-def test_load_pact_helper(monkeypatch):
+def test_load_pact_helper():
     executor = ProviderExecutor(FakePyFuncItem())
 
     helper_path = os.getcwd() + '/tests/resources/pact_helper.py'
@@ -127,3 +287,10 @@ class FakePyFuncItem(object):
 
     def get_marker(self, marker_name):
         return FakeMarker(marker_name, marker_name)
+
+
+def simple_pact():
+    path_to_pact = os.getcwd() + '/tests/resources/simple_pact.json'
+    with open(path_to_pact) as f:
+        pact = json.load(f)
+    return pact
