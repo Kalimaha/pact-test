@@ -13,5 +13,6 @@ setup(
     install_requires=[],
     setup_requires=['pytest-runner'],
     tests_require=['pytest>=3.0', 'pytest-pep8', 'pytest-sugar', 'pytest-mock'],
-    url='https://github.com/Kalimaha/pact-test/'
+    url='https://github.com/Kalimaha/pact-test/',
+    scripts=['bin/pact-test']
 )
