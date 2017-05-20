@@ -15,3 +15,4 @@ __pycache__
 .DS_Store
 pytest_pact.egg-info/
 dist/
+.tox
