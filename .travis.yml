@@ -1,14 +1,17 @@
 language: python
+
+sudo: false
+
 python:
-  - 2.7
-  - 3.3
-  - 3.4
   - 3.5
   - 3.6
+
 install:
-  - "pip install pytest pytest-cov pytest-pep8 pytest-sugar pytest-mock codecov"
-  - "pip install -e ."
-script:
-  - py.test --cov=./
-after_success:
-  - codecov
+  - pip install tox-travis
+  - pip install pytest-cov
+  - pip install coveralls
+  - pip install -e .
+
+script: tox
+
+after_success: coveralls
