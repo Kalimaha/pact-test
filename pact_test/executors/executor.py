@@ -1,4 +1,4 @@
-from pytest_pact.utils.pytest_utils import read_marker
+from pact_test.utils.pytest_utils import read_marker
 
 
 class Executor(object):

@@ -1,4 +1,4 @@
-from pytest_pact.executors.consumer_executor import ConsumerExecutor
+from pact_test.executors.consumer_executor import ConsumerExecutor
 
 
 def test_valid_setup():

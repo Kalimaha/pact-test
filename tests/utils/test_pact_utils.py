@@ -1,4 +1,4 @@
-from pytest_pact.utils.pact_utils import *
+from pact_test.utils.pact_utils import *
 
 
 def test_standard_executor(mocker):

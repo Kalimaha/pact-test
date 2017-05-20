@@ -2,7 +2,7 @@ from setuptools import setup
 from setuptools import find_packages
 
 setup(
-    name='pytest-pact',
+    name='pact-test',
     version='0.1.0',
     author='Guido Barbaglia',
     author_email='guido.barbaglia@gmail.com',
@@ -13,10 +13,5 @@ setup(
     install_requires=[],
     setup_requires=['pytest-runner'],
     tests_require=['pytest>=3.0', 'pytest-pep8', 'pytest-sugar', 'pytest-mock'],
-    url='https://github.com/Kalimaha/pytest-pact/',
-    entry_points = {
-        'pytest11': [
-            'pytest-pact = pytest_pact.pact',
-        ]
-    }
+    url='https://github.com/Kalimaha/pact-test/'
 )
