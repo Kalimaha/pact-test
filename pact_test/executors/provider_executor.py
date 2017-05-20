@@ -5,11 +5,11 @@ import json
 import urllib.parse
 import urllib.request
 from urllib.request import Request
-from pytest_pact.utils.pytest_utils import read_marker
-from pytest_pact.executors.executor import Executor
-from pytest_pact.pact_markers import STATE
-from pytest_pact.pact_markers import PACT_URI
-from pytest_pact.pact_markers import HONOURS_PACT_WITH
+from pact_test.utils.pytest_utils import read_marker
+from pact_test.executors.executor import Executor
+from pact_test.pact_markers import STATE
+from pact_test.pact_markers import PACT_URI
+from pact_test.pact_markers import HONOURS_PACT_WITH
 
 
 class ProviderExecutor(Executor):

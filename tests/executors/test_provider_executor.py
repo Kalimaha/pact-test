@@ -4,7 +4,7 @@ import json
 import pytest
 import urllib.request
 from urllib.request import Request
-from pytest_pact.executors.provider_executor import ProviderExecutor
+from pact_test.executors.provider_executor import ProviderExecutor
 
 
 def test_verify_pact(mocker):

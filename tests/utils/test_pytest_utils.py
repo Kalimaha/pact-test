@@ -1,4 +1,4 @@
-from pytest_pact.utils.pytest_utils import *
+from pact_test.utils.pytest_utils import *
 
 
 def test_read_existing_marker():
