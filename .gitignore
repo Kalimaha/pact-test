@@ -16,3 +16,5 @@ __pycache__
 pytest_pact.egg-info/
 dist/
 .tox
+.idea/
+*.iml

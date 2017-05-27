@@ -1,2 +1,2 @@
-def set_up():
+def setup():
     print('Starting provider...')

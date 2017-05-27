@@ -1,0 +1,5 @@
+{
+  "consumer_tests_path": "mypath/myconsumer",
+  "provider_tests_path": "mypath/myprovider",
+  "pact_broker_uri": "mypath/mybroker"
+}
