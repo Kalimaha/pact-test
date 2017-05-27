@@ -19,7 +19,8 @@ class ServiceProviderTest(object):
 
 def service_consumer(service_consumer_value):
     def wrapper(calling_class):
-        setattr(calling_class, 'set_service_consumer', eval('set_service_consumer(calling_class, "' + service_consumer_value + '")'))
+        setattr(calling_class, 'set_service_consumer',
+                eval('set_service_consumer(calling_class, "' + service_consumer_value + '")'))
         return calling_class
     return wrapper
 
@@ -30,7 +31,8 @@ def set_service_consumer(self, service_consumer_value):
 
 def has_pact_with(has_pact_with_value):
     def wrapper(calling_class):
-        setattr(calling_class, 'set_has_pact_with', eval('set_has_pact_with(calling_class, "' + has_pact_with_value + '")'))
+        setattr(calling_class, 'set_has_pact_with',
+                eval('set_has_pact_with(calling_class, "' + has_pact_with_value + '")'))
         return calling_class
     return wrapper
 

@@ -1,0 +1,2 @@
+class PactTestException(Exception):
+    pass

@@ -1,3 +1,5 @@
+import pytest
+from pact_test.exceptions import PactTestException
 from pact_test.models.service_consumer_test import state
 from pact_test.models.service_consumer_test import pact_uri
 from pact_test.models.service_consumer_test import has_pact_with
@@ -55,3 +57,27 @@ def test_states():
     assert default_state is not None
     assert default_state.state == 'Default state'
     assert default_state() == 42
+
+
+def test_missing_pact_uri():
+    @has_pact_with('Restaurant Customer')
+    class MyTest(ServiceConsumerTest):
+        @state('the breakfast is available')
+        def setup(self):
+            return 42
+
+    with pytest.raises(PactTestException) as e:
+        MyTest().is_valid()
+    assert str(e.value) == 'Missing setup for "pact_uri".'
+
+
+def test_missing_has_pact_with():
+    @pact_uri('http://montypython.com/')
+    class MyTest(ServiceConsumerTest):
+        @state('the breakfast is available')
+        def setup(self):
+            return 42
+
+    with pytest.raises(PactTestException) as e:
+        MyTest().is_valid()
+    assert str(e.value) == 'Missing setup for "has_pact_with".'

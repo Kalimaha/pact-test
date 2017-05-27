@@ -1,3 +1,6 @@
+from pact_test.exceptions import PactTestException
+
+
 class ServiceConsumerTest(object):
     pact_uri = None
     has_pact_with = None
@@ -9,10 +12,17 @@ class ServiceConsumerTest(object):
             if callable(obj) and hasattr(obj, 'state'):
                 yield obj
 
+    def is_valid(self):
+        if self.pact_uri is None:
+            raise PactTestException('Missing setup for "pact_uri".')
+        if self.has_pact_with is None:
+            raise PactTestException('Missing setup for "has_pact_with".')
+
 
 def pact_uri(pact_uri_value):
     def wrapper(calling_class):
-        setattr(calling_class, 'set_pact_uri', eval('set_pact_uri(calling_class, "' + pact_uri_value + '")'))
+        setattr(calling_class, 'set_pact_uri',
+                eval('set_pact_uri(calling_class, "' + pact_uri_value + '")'))
         return calling_class
     return wrapper
 
@@ -23,7 +33,8 @@ def set_pact_uri(self, pact_uri_value):
 
 def has_pact_with(has_pact_with_value):
     def wrapper(calling_class):
-        setattr(calling_class, 'set_has_pact_with', eval('set_has_pact_with(calling_class, "' + has_pact_with_value + '")'))
+        setattr(calling_class, 'set_has_pact_with',
+                eval('set_has_pact_with(calling_class, "' + has_pact_with_value + '")'))
         return calling_class
     return wrapper
 
