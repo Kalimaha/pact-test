@@ -1,3 +1,4 @@
+from pact_test.constants import *
 from pact_test.exceptions import PactTestException
 
 
@@ -12,11 +13,13 @@ class ServiceConsumerTest(object):
             if callable(obj) and hasattr(obj, 'state'):
                 yield obj
 
-    def is_valid(self):
+    def validate(self):
         if self.pact_uri is None:
-            raise PactTestException('Missing setup for "pact_uri".')
+            msg = MISSING_PACT_URI + __file__
+            raise PactTestException(msg)
         if self.has_pact_with is None:
-            raise PactTestException('Missing setup for "has_pact_with".')
+            msg = MISSING_HAS_PACT_WITH + __file__
+            raise PactTestException(msg)
 
 
 def pact_uri(pact_uri_value):
