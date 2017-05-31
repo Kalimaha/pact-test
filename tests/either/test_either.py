@@ -12,17 +12,17 @@ def test_right_value():
 
 
 def test_concat_right():
-    out = minus_one(45).concat(minus_one).concat(minus_one)
+    out = minus_one(45) >> minus_one >> minus_one
     assert out.value == 42
 
 
 def test_concat_left():
-    out = minus_one(1).concat(one_divided_by)
+    out = minus_one(1) >> one_divided_by
     assert out.value == "Division by zero."
 
 
 def test_break_the_chain():
-    out = minus_one(1).concat(one_divided_by).concat(minus_one)
+    out = minus_one(1) >> one_divided_by >> minus_one
     assert out.value == "Division by zero."
 
 
