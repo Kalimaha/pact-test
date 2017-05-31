@@ -1,5 +1,5 @@
+from pact_test.either import *
 from pact_test.constants import *
-from pact_test.exceptions import PactTestException
 
 
 class ServiceConsumerTest(object):
@@ -13,13 +13,14 @@ class ServiceConsumerTest(object):
             if callable(obj) and hasattr(obj, 'state'):
                 yield obj
 
-    def validate(self):
+    def is_valid(self):
         if self.pact_uri is None:
             msg = MISSING_PACT_URI + __file__
-            raise PactTestException(msg)
+            return Left(msg)
         if self.has_pact_with is None:
             msg = MISSING_HAS_PACT_WITH + __file__
-            raise PactTestException(msg)
+            return Left(msg)
+        return Right(True)
 
 
 def pact_uri(pact_uri_value):
