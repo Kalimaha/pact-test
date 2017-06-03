@@ -2,9 +2,7 @@ import os
 import sys
 import imp
 import json
-import pytest
 from pact_test.config.config_builder import Config
-from pact_test.exceptions import PactTestException
 from pact_test.runners.consumer_tests_runner import ConsumerTestsRunner
 
 
@@ -12,9 +10,7 @@ def test_missing_pact_helper():
     config = Config()
     t = ConsumerTestsRunner(config)
     msg = 'Missing "pact_helper.py" at "tests/service_consumers".'
-    with pytest.raises(PactTestException) as e:
-        t.path_to_pact_helper()
-    assert str(e.value) == msg
+    assert t.path_to_pact_helper().value == msg
 
 
 def test_missing_setup_method():
@@ -26,9 +22,7 @@ def test_missing_setup_method():
     config.consumer_tests_path = test_pact_helper_path
     t = ConsumerTestsRunner(config)
     msg = 'Missing "setup" method in "pact_helper.py".'
-    with pytest.raises(PactTestException) as e:
-        t.load_pact_helper()
-    assert str(e.value) == msg
+    assert t.load_pact_helper().value == msg
 
 
 def test_missing_tear_down_method():
@@ -40,9 +34,7 @@ def test_missing_tear_down_method():
     config.consumer_tests_path = test_pact_helper_path
     t = ConsumerTestsRunner(config)
     msg = 'Missing "tear_down" method in "pact_helper.py".'
-    with pytest.raises(PactTestException) as e:
-        t.load_pact_helper()
-    assert str(e.value) == msg
+    assert t.load_pact_helper().value == msg
 
 
 def test_empty_tests_list(monkeypatch):
@@ -56,9 +48,7 @@ def test_empty_tests_list(monkeypatch):
     monkeypatch.setattr(os, 'listdir', empty_list)
 
     t = ConsumerTestsRunner(config)
-    with pytest.raises(PactTestException) as e:
-        t.collect_tests()
-    assert str(e.value) == 'There are no consumer tests to verify.'
+    assert t.collect_tests().value == 'There are no consumer tests to verify.'
 
 
 def test_collect_tests():
@@ -68,7 +58,7 @@ def test_collect_tests():
     config.consumer_tests_path = test_pact_helper_path
     t = ConsumerTestsRunner(config)
 
-    tests = t.collect_tests()
+    tests = t.collect_tests().value
     assert len(tests) == 1
 
     test = tests[0]()
@@ -87,10 +77,8 @@ def test_invalid_test():
     test = module.TestRestaurantCustomer
 
     t = ConsumerTestsRunner(None)
-
-    with pytest.raises(PactTestException) as e:
-        t.verify_test(test)
-    assert str(e.value).startswith('Missing setup for "has_pact_with"')
+    msg = 'Missing setup for "has_pact_with"'
+    assert t.verify_test(test).value.startswith(msg)
 
 
 def test_verify_missing_state(mocker):
@@ -106,9 +94,8 @@ def test_verify_missing_state(mocker):
     t = ConsumerTestsRunner(None)
     mocker.patch.object(t, 'get_pact', new=pact_content)
 
-    with pytest.raises(PactTestException) as e:
-        t.verify_test(test)
-    assert str(e.value) == 'Missing implementation for state "My State".'
+    msg = 'Missing implementation for state "My State".'
+    assert t.verify_test(test).value == msg
 
 
 def test_verify_existing_state(mocker):

@@ -1,8 +1,8 @@
 import os
 import imp
 import inspect
+from pact_test.either import *
 from pact_test.constants import *
-from pact_test.exceptions import PactTestException
 from pact_test.utils.pact_utils import get_pact
 
 
@@ -17,17 +17,20 @@ class ConsumerTestsRunner(object):
 
     def verify_test(self, test_class):
         test = test_class()
-        test.validate()
-        pact = self.get_pact(test.pact_uri)
+        validity_check = test.is_valid()
+        if type(validity_check) is Right:
+            pact = self.get_pact(test.pact_uri)
 
-        pact_states = list(map(lambda i: i['providerState'], pact['interactions']))
-        test_states = list(map(lambda s: s.state, test.states))
+            pact_states = list(map(lambda i: i['providerState'], pact['interactions']))
+            test_states = list(map(lambda s: s.state, test.states))
 
-        for pact_state in pact_states:
-            if pact_state not in test_states:
-                msg = MISSING_STATE + '"' + pact_state + '".'
-                raise PactTestException(msg)
-            self.verify_state(test.states, pact_state)
+            for pact_state in pact_states:
+                if pact_state not in test_states:
+                    msg = MISSING_STATE + '"' + pact_state + '".'
+                    return Left(msg)
+                self.verify_state(test.states, pact_state)
+        else:
+            return validity_check
 
     def verify_state(self, states, provider_state):
         # for s in states:
@@ -59,25 +62,25 @@ class ConsumerTestsRunner(object):
                         tests.append(obj)
 
         if not files:
-            raise PactTestException(MISSING_TESTS)
-        return tests
+            return Left(MISSING_TESTS)
+        return Right(tests)
 
     def all_files(self):
         return os.listdir(self.config.consumer_tests_path)
 
     def load_pact_helper(self):
-        self.pact_helper = imp.load_source('pact_helper', self.path_to_pact_helper())
+        self.pact_helper = imp.load_source('pact_helper', self.path_to_pact_helper().value)
         if hasattr(self.pact_helper, 'setup') is False:
-            raise PactTestException(MISSING_SETUP)
+            return Left(MISSING_SETUP)
         if hasattr(self.pact_helper, 'tear_down') is False:
-            raise PactTestException(MISSING_TEAR_DOWN)
+            return Left(MISSING_TEAR_DOWN)
 
     def path_to_pact_helper(self):
         path = os.path.join(self.config.consumer_tests_path, 'pact_helper.py')
         if os.path.isfile(path) is False:
             msg = MISSING_PACT_HELPER + self.config.consumer_tests_path + '".'
-            raise PactTestException(msg)
-        return path
+            return Left(msg)
+        return Right(path)
 
 
 def filter_rule(filename):
