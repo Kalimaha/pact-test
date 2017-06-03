@@ -1,6 +1,6 @@
 from pact_test.config.config_builder import Config
-from pact_test.runners.consumer_tests_runner import ConsumerTestsRunner
-from pact_test.runners.provider_tests_runner import ProviderTestsRunner
+from pact_test.runners.service_consumers.test_suite import ServiceConsumerTestSuiteRunner
+from pact_test.runners.service_providers.provider_tests_runner import ProviderTestsRunner
 
 
 def verify(verify_consumers=False, verify_providers=False):
@@ -12,7 +12,7 @@ def verify(verify_consumers=False, verify_providers=False):
 
 
 def run_consumer_tests(config):
-    ConsumerTestsRunner(config).verify()
+    ServiceConsumerTestSuiteRunner(config).verify()
 
 
 def run_provider_tests(config):

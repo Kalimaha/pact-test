@@ -31,6 +31,11 @@ def test_multiple_parameters():
     assert out.value == 13
 
 
+def test_multiple_parameters_left():
+    out = one_divided_by(0).concat(my_sum, 5)
+    assert out.value == "Division by zero."
+
+
 def minus_one(value):
     return Right(value - 1)
 

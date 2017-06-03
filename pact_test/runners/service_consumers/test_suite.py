@@ -6,7 +6,7 @@ from pact_test.constants import *
 from pact_test.utils.pact_utils import get_pact
 
 
-class ConsumerTestsRunner(object):
+class ServiceConsumerTestSuiteRunner(object):
     pact_helper = None
 
     def __init__(self, config):
@@ -15,8 +15,7 @@ class ConsumerTestsRunner(object):
     def verify(self):
         pass
 
-    def verify_test(self, test_class):
-        test = test_class()
+    def verify_test(self, test):
         validity_check = test.is_valid()
         if type(validity_check) is Right:
             pact = self.get_pact(test.pact_uri)
