@@ -5,6 +5,7 @@ from pact_test.runners.service_providers.provider_tests_runner import ProviderTe
 
 def verify(verify_consumers=False, verify_providers=False):
     config = Config()
+
     if verify_consumers:
         run_consumer_tests(config)
     if verify_providers:

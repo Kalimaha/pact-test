@@ -2,6 +2,7 @@ import os
 import imp
 import inspect
 from pact_test.either import *
+from pact_test.utils.pact_helper_utils import load_pact_helper
 from pact_test.constants import *
 from pact_test.utils.pact_utils import get_pact
 
@@ -13,7 +14,14 @@ class ServiceConsumerTestSuiteRunner(object):
         self.config = config
 
     def verify(self):
-        pass
+        pact_helper = load_pact_helper(self.config.consumer_tests_path)
+        if type(pact_helper) is Right:
+            self.pact_helper = pact_helper
+            return self.collect_tests() >> self.verify_tests
+        return pact_helper
+
+    def verify_tests(self, tests):
+        return list(map(self.verify_test, tests))
 
     def verify_test(self, test):
         validity_check = test.is_valid()
@@ -66,20 +74,6 @@ class ServiceConsumerTestSuiteRunner(object):
 
     def all_files(self):
         return os.listdir(self.config.consumer_tests_path)
-
-    def load_pact_helper(self):
-        self.pact_helper = imp.load_source('pact_helper', self.path_to_pact_helper().value)
-        if hasattr(self.pact_helper, 'setup') is False:
-            return Left(MISSING_SETUP)
-        if hasattr(self.pact_helper, 'tear_down') is False:
-            return Left(MISSING_TEAR_DOWN)
-
-    def path_to_pact_helper(self):
-        path = os.path.join(self.config.consumer_tests_path, 'pact_helper.py')
-        if os.path.isfile(path) is False:
-            msg = MISSING_PACT_HELPER + self.config.consumer_tests_path + '".'
-            return Left(msg)
-        return Right(path)
 
 
 def filter_rule(filename):

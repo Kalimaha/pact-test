@@ -1,6 +1,9 @@
-def set_up():
-    print('Starting provider...')
+from pact_test import PactHelper
 
 
-def tear_down():
-    print('Shutting down provider...')
+class MyPactHelper(PactHelper):
+    def setup(self):
+        pass
+
+    def tear_down(self):
+        pass

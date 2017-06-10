@@ -1,10 +1,10 @@
-from pact_test.models.service_provider_test import given
-from pact_test.models.service_provider_test import with_request
-from pact_test.models.service_provider_test import has_pact_with
-from pact_test.models.service_provider_test import upon_receiving
-from pact_test.models.service_provider_test import service_consumer
-from pact_test.models.service_provider_test import will_respond_with
-from pact_test.models.service_provider_test import ServiceProviderTest
+from pact_test import given
+from pact_test import with_request
+from pact_test import has_pact_with
+from pact_test import upon_receiving
+from pact_test import service_consumer
+from pact_test import will_respond_with
+from pact_test import ServiceProviderTest
 
 
 def test_default_service_consumer_value():

@@ -1,7 +1,7 @@
-from pact_test.models.service_consumer_test import state
-from pact_test.models.service_consumer_test import pact_uri
-from pact_test.models.service_consumer_test import has_pact_with
-from pact_test.models.service_consumer_test import ServiceConsumerTest
+from pact_test import state
+from pact_test import pact_uri
+from pact_test import has_pact_with
+from pact_test import ServiceConsumerTest
 
 
 def test_default_pact_uri():
