@@ -1,2 +1,6 @@
-def setup():
-    print('Starting provider...')
+from pact_test import PactHelper
+
+
+class MyPactHelper(PactHelper):
+    def setup(self):
+        pass
