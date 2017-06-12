@@ -1,9 +1,8 @@
+import requests
 from pact_test import state
 from pact_test import PactHelper
 from pact_test import ServiceConsumerTest
 from pact_test.runners.service_consumers.state_test import verify_state
-from pact_test.runners.service_consumers.state_test import _create_request
-from pact_test.runners.service_consumers.state_test import _parse_response
 
 
 class MyPactHelper(PactHelper):
@@ -24,6 +23,15 @@ pact_helper = MyPactHelper()
 
 
 def test_verify_state(mocker):
+    class Response(object):
+        status_code = 200
+        headers = {'Content-Type': 'application/json'}
+
+        def json(self):
+            return {'spam': 'eggs'}
+
+    mocker.patch.object(requests, 'request', lambda x, **kwargs: Response())
+
     test_instance = TestLibraryApp()
     pact_helper = MyPactHelper()
 
