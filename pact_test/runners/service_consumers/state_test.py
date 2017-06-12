@@ -1,4 +1,4 @@
-from pact_test.either import *
+from pact_test.matchers.response_matcher import match
 from pact_test.clients.http_client import execute_interaction_request
 
 
@@ -15,9 +15,6 @@ def verify_state(interaction, pact_helper, test_instance):
     # EXECUTE state() HERE
     response = execute_interaction_request(pact_helper.test_url, pact_helper.test_port, interaction)
     # VERIFY response HERE
+    response_verification = None
     pact_helper.tear_down()
-    return Right(_build_test_result())
-
-
-def _build_test_result(status='PASSED', reason=None):
-    return {'status': status, 'reason': reason}
+    return response_verification

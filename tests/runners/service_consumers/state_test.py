@@ -38,10 +38,8 @@ def test_verify_state(mocker):
     mocker.spy(pact_helper, 'setup')
     mocker.spy(pact_helper, 'tear_down')
 
-    response = verify_state(interaction, pact_helper, test_instance).value
-    expected_response = {'status': 'PASSED', 'reason': None}
+    response = verify_state(interaction, pact_helper, test_instance)
 
-    assert response == expected_response
     assert pact_helper.setup.call_count == 1
     assert pact_helper.tear_down.call_count == 1
     assert pact_helper.tear_down.call_count == 1
