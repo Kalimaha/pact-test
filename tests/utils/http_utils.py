@@ -1,5 +1,5 @@
-from pact_test.utils.http import build_request_from_interaction
-from pact_test.utils.http import build_response_from_interaction
+from pact_test.utils.http_utils import build_request_from_interaction
+from pact_test.utils.http_utils import build_response_from_interaction
 
 
 def test_response_status():
