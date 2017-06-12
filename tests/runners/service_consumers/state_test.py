@@ -39,28 +39,6 @@ def test_verify_state(mocker):
     assert pact_helper.tear_down.call_count == 1
 
 
-def test_create_request():
-    request_body = interaction['request']
-    request = _create_request(pact_helper.test_url, pact_helper.test_port,
-                              request_body).value
-
-    assert request.method == request_body['method']
-    assert request.selector == request_body['path'] + request_body['query']
-    assert request.headers == request_body.get('headers', {})
-
-
-def test_parse_text_response():
-    request = _create_request('api.ipify.org', None, interaction['request'])
-    response = _parse_response(request.value).value
-    assert type(response) is str
-
-
-def test_parse_json_response():
-    request = _create_request('ip.jsontest.com', None, interaction['request'])
-    response = _parse_response(request.value).value
-    assert type(response) is dict
-
-
 interaction = {
     'providerState': 'some books exist',
     'request': {
