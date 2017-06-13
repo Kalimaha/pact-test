@@ -10,6 +10,8 @@
     :target: https://travis-ci.org/Kalimaha/pact-test
 .. image:: https://coveralls.io/repos/github/Kalimaha/pact-test/badge.svg?branch=development
     :target: https://coveralls.io/github/Kalimaha/pact-test?branch=development
+.. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg 
+    :target: https://saythanks.io/to/Kalimaha
 
 Pact Test for Python
 ===============
