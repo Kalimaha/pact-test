@@ -1,8 +1,7 @@
 from pact_test.models.service_consumer_test import *
 
 
-@has_pact_with('Restaurant')
-@pact_uri('tests/resources/pact_files/simple.json')
+@pact_uri('http://google.com/')
 class TestRestaurantCustomer(ServiceConsumerTest):
 
     @state('the breakfast is available')
