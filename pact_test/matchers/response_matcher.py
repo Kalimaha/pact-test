@@ -47,4 +47,7 @@ def _build_error_message(section, expected, actual):
 
 
 def _is_subset(expected, actual):
-    return all(item in expected.items() for item in actual.items())
+    actual_items = actual.items() if actual else {}
+    expected_items = expected.items() if expected else {}
+
+    return all(item in expected_items for item in actual_items)

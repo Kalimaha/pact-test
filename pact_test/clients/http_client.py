@@ -29,7 +29,7 @@ def _parse_body(server_response, content_type):
 
 def _parse_headers(server_response):
     headers = []
-    server_headers = server_response.headers
+    server_headers = server_response.headers or []
     for key in server_headers:
         headers.append((key, server_headers[key]))
     return headers

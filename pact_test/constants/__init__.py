@@ -1,3 +1,6 @@
+PASSED = 'PASSED'
+FAILED = 'FAILED'
+PROVIDER_STATE = 'providerState'
 MISSING_STATE = 'Missing implementation for state '
 MISSING_PACT_HELPER = 'Missing "pact_helper.py" at "'
 MISSING_PACT_URI = 'Missing setup for "pact_uri" at '

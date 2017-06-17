@@ -2,6 +2,7 @@ import requests
 from pact_test import state
 from pact_test import PactHelper
 from pact_test import ServiceConsumerTest
+from pact_test.runners.service_consumers.state_test import find_state
 from pact_test.runners.service_consumers.state_test import verify_state
 
 
@@ -22,13 +23,37 @@ test_instance = TestLibraryApp()
 pact_helper = MyPactHelper()
 
 
+def test_find_state():
+    response = find_state(interaction, test_instance).value
+    assert type(response).__name__.endswith('method')
+
+
+def test_find_state_missing():
+    class BadTest(ServiceConsumerTest):
+        pass
+
+    bad_test_instance = BadTest()
+    expected_response = {
+        'state': 'some books exist',
+        'status': 'FAILED',
+        'errors': [
+            'Missing state implementation for "some books exist"'
+        ]
+    }
+    response = find_state(interaction, bad_test_instance).value
+    assert response == expected_response
+
+
 def test_verify_state(mocker):
     class Response(object):
         status_code = 200
         headers = {'Content-Type': 'application/json'}
 
         def json(self):
-            return {'spam': 'eggs'}
+            return {
+                'id': 42,
+                'title': 'The Hitchhicker\'s Guide to the Galaxy'
+            }
 
     mocker.patch.object(requests, 'request', lambda x, **kwargs: Response())
 
@@ -38,11 +63,17 @@ def test_verify_state(mocker):
     mocker.spy(pact_helper, 'setup')
     mocker.spy(pact_helper, 'tear_down')
 
-    response = verify_state(interaction, pact_helper, test_instance)
+    response = verify_state(interaction, pact_helper, test_instance).value
+    expected_response = {
+        'state': 'some books exist',
+        'status': 'PASSED',
+        'errors': []
+    }
 
     assert pact_helper.setup.call_count == 1
     assert pact_helper.tear_down.call_count == 1
     assert pact_helper.tear_down.call_count == 1
+    assert response == expected_response
 
 
 interaction = {
@@ -63,6 +94,9 @@ interaction = {
         'body': {
             'id': 42,
             'title': 'The Hitchhicker\'s Guide to the Galaxy'
+        },
+        'headers': {
+            'Content-Type': 'application/json'
         }
     }
 }
@@ -71,4 +105,8 @@ interaction = {
 class TestLibraryApp(ServiceConsumerTest):
     @state('some books exist')
     def test_get_book(self):
+        pass
+
+    @state('no books exist')
+    def test_no_book(self):
         pass

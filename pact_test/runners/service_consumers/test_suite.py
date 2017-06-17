@@ -27,6 +27,7 @@ class ServiceConsumerTestSuiteRunner(object):
         validity_check = test.is_valid()
         if type(validity_check) is Right:
             pact = self.get_pact(test.pact_uri)
+            print(pact)
 
             pact_states = list(map(lambda i: i['providerState'], pact['interactions']))
             test_states = list(map(lambda s: s.state, test.states))

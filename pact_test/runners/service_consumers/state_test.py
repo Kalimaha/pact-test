@@ -1,20 +1,38 @@
 from pact_test.matchers.response_matcher import match
+from pact_test.either import *
+from pact_test.constants import *
 from pact_test.clients.http_client import execute_interaction_request
 
 
 def verify_state(interaction, pact_helper, test_instance):
-    """
-        1. PactHelper.setup() per far partire il servizio
-        2. state() per preparare il sistema
-        3. creare richiesta basata su Pact
-        4. eseguire richiesta
-        5. verificare risposta
-        6. PactHelper.tear_down() per fermare il servizio
-    """
-    pact_helper.setup()
-    # EXECUTE state() HERE
-    response = execute_interaction_request(pact_helper.test_url, pact_helper.test_port, interaction)
-    # VERIFY response HERE
-    response_verification = None
-    pact_helper.tear_down()
-    return response_verification
+    state = find_state(interaction, test_instance)
+    if type(state) is Right:
+        pact_helper.setup()
+        state.value()
+        response = execute_interaction_request(pact_helper.test_url, pact_helper.test_port, interaction)
+        response_verification = match(interaction, response)
+        output = _build_state_response(state, response_verification)
+        pact_helper.tear_down()
+        return output
+    return state
+
+
+def _build_state_response(state, response_verification):
+    if type(response_verification) is Right:
+        return Right(_format_message(state.value.state, PASSED, []))
+    else:
+        errors = [response_verification.value]
+        return Left(_format_message(state.value.state, FAILED, errors))
+
+
+def find_state(interaction, test_instance):
+    state = interaction[PROVIDER_STATE]
+    for s in test_instance.states:
+        if s.state == state:
+            return Right(s)
+    message = 'Missing state implementation for "' + state + '"'
+    return Left(_format_message(state, FAILED, [message]))
+
+
+def _format_message(state, status, errors):
+    return {'state': state, 'status': status, 'errors': errors}
