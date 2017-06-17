@@ -1,8 +1,6 @@
 import json
-try:                                    # pragma: no cover
-    from urllib.request import urlopen  # pragma: no cover
-except ImportError:                     # pragma: no cover
-    from urllib import urlopen          # pragma: no cover
+import requests
+from pact_test.either import *
 
 
 def get_pact(location):
@@ -12,13 +10,15 @@ def get_pact(location):
 
 
 def __get_pact_from_file(filename):
-    with open(filename) as file_content:
-        return json.loads(file_content.read())
+    try:
+        with open(filename) as file_content:
+            return Right(json.loads(file_content.read()))
+    except Exception as e:
+        return Left(str(e))
 
 
 def __get_pact_from_url(url):
-    return json.loads(__url_content(url))
-
-
-def __url_content(url):         # pragma: no cover
-    return urlopen(url).read()  # pragma: no cover
+    try:
+        return Right(requests.get(url).json())
+    except Exception as e:
+        return Left(str(e))
