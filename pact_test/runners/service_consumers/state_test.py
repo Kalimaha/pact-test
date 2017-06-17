@@ -9,12 +9,19 @@ def verify_state(interaction, pact_helper, test_instance):
     if type(state) is Right:
         pact_helper.setup()
         state.value()
-        response = execute_interaction_request(pact_helper.test_url, pact_helper.test_port, interaction)
-        response_verification = match(interaction, response)
-        output = _build_state_response(state, response_verification)
+        output = _execute_request(pact_helper, interaction)
+        if type(output) is Right:
+            response_verification = match(interaction, output.value)
+            output = _build_state_response(state, response_verification)
         pact_helper.tear_down()
         return output
     return state
+
+
+def _execute_request(pact_helper, interaction):
+    url = pact_helper.test_url
+    port = pact_helper.test_port
+    return execute_interaction_request(url, port, interaction)
 
 
 def _build_state_response(state, response_verification):

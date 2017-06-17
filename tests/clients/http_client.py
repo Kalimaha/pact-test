@@ -4,6 +4,17 @@ from pact_test.clients.http_client import _parse_headers
 from pact_test.clients.http_client import execute_interaction_request
 
 
+def test_http_error(mocker):
+    def boom(_, **kwargs):
+        raise Exception('Boom!')
+
+    mocker.patch.object(requests, 'request', new=boom)
+
+    interaction = {'request': {'path': '/spam/eggs'}}
+    response = execute_interaction_request('', None, interaction).value
+    assert response == 'Boom!'
+
+
 def test_execute_interaction_request(mocker):
     class Response(object):
         status_code = 200
@@ -16,7 +27,7 @@ def test_execute_interaction_request(mocker):
     url = 'montypython.com'
     port = None
     interaction = {'request': {'path': '/spam/eggs'}}
-    response = execute_interaction_request(url, port, interaction)
+    response = execute_interaction_request(url, port, interaction).value
 
     assert response.status == 200
     assert len(response.headers) > 1
@@ -35,7 +46,7 @@ def test_execute_interaction_request_text(mocker):
     url = 'montypython.com'
     port = None
     interaction = {'request': {'path': '/spam/eggs'}}
-    response = execute_interaction_request(url, port, interaction)
+    response = execute_interaction_request(url, port, interaction).value
 
     assert response.status == 200
     assert response.headers == [('Date', '12-06-2017')]

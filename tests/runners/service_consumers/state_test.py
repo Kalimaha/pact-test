@@ -28,6 +28,23 @@ def test_find_state():
     assert type(response).__name__.endswith('method')
 
 
+def test_missing_state():
+    i = interaction.copy()
+    i['providerState'] = 'Catch me if you can'
+
+    test_instance = TestLibraryApp()
+    pact_helper = MyPactHelper()
+
+    response = verify_state(i, pact_helper, test_instance).value
+    expected_response = {
+        'state': 'Catch me if you can',
+        'status': 'FAILED',
+        'errors': ['Missing state implementation for "Catch me if you can"']
+    }
+
+    assert response == expected_response
+
+
 def test_find_state_missing():
     class BadTest(ServiceConsumerTest):
         pass
@@ -71,7 +88,6 @@ def test_verify_state(mocker):
     }
 
     assert pact_helper.setup.call_count == 1
-    assert pact_helper.tear_down.call_count == 1
     assert pact_helper.tear_down.call_count == 1
     assert response == expected_response
 

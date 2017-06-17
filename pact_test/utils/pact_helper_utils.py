@@ -9,7 +9,9 @@ from pact_test.constants import MISSING_PACT_HELPER
 
 
 def load_pact_helper(consumer_tests_path):
-    return _path_to_pact_helper(consumer_tests_path).concat(_load_module, 'pact_helper') >> _load_user_class
+    return _path_to_pact_helper(consumer_tests_path)\
+               .concat(_load_module, 'pact_helper') \
+               >> _load_user_class
 
 
 def _load_user_class(user_module):

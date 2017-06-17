@@ -46,7 +46,6 @@ def test_non_matching_body():
     msg = 'Non-matching body for the response. Expected:\n\n\t' + \
           str({'spam': 'eggs'}) + '\n\nReceived:\n\n\t' + \
           str({'spam': 'spam'})
-    print(match(interaction, pact_response).value)
     assert match(interaction, pact_response).value == msg
 
 

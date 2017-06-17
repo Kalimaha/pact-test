@@ -1,3 +1,6 @@
+REQUEST = 'request'
+TEXT = 'text'
+JSON = 'application/json'
 PASSED = 'PASSED'
 FAILED = 'FAILED'
 PROVIDER_STATE = 'providerState'

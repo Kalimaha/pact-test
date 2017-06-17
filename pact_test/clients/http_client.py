@@ -1,23 +1,31 @@
 import requests
+from pact_test.either import *
+from pact_test.constants import *
 from pact_test.models.response import PactResponse
-
-
-TEXT = 'text'
-JSON = 'application/json'
 
 
 def execute_interaction_request(url, port, interaction):
     url = _build_url(url, port, interaction)
+    method = interaction[REQUEST].get('method', 'GET')
+    server_response = _server_response(method, url=url)
 
-    server_response = requests.request('GET', url=url)
-    headers = _parse_headers(server_response)
-    content_type = _get_content_type(headers)
+    if type(server_response) is Right:
+        headers = _parse_headers(server_response.value)
+        content_type = _get_content_type(headers)
+        return Right(PactResponse(
+            status=server_response.value.status_code,
+            headers=headers,
+            body=_parse_body(server_response.value, content_type)
+        ))
 
-    return PactResponse(
-        status=server_response.status_code,
-        headers=headers,
-        body=_parse_body(server_response, content_type)
-    )
+    return server_response
+
+
+def _server_response(method, url):
+    try:
+        return Right(requests.request(method, url=url))
+    except Exception as e:
+        return Left(str(e))
 
 
 def _parse_body(server_response, content_type):
@@ -36,13 +44,11 @@ def _parse_headers(server_response):
 
 
 def _build_url(url, port, interaction):
-    path = interaction['request'].get('path', '')
-    query = interaction['request'].get('query', '')
+    path = interaction[REQUEST].get('path', '')
+    query = interaction[REQUEST].get('query', '')
 
     test_port = str(port) if port else str(80)
-    test_url = 'http://' + url + ':' + test_port + path + query
-
-    return test_url
+    return 'http://' + url + ':' + test_port + path + query
 
 
 def _get_content_type(headers):

@@ -2,9 +2,10 @@ import os
 import imp
 import inspect
 from pact_test.either import *
-from pact_test.utils.pact_helper_utils import load_pact_helper
 from pact_test.constants import *
 from pact_test.utils.pact_utils import get_pact
+from pact_test.utils.pact_helper_utils import load_pact_helper
+from pact_test.runners.service_consumers.state_test import verify_state
 
 
 class ServiceConsumerTestSuiteRunner(object):
@@ -16,45 +17,21 @@ class ServiceConsumerTestSuiteRunner(object):
     def verify(self):
         pact_helper = load_pact_helper(self.config.consumer_tests_path)
         if type(pact_helper) is Right:
-            self.pact_helper = pact_helper
-            return self.collect_tests() >> self.verify_tests
+            self.pact_helper = pact_helper.value
+            tests = self.collect_tests().value
+            return list(map(self.verify_test, tests))
         return pact_helper
-
-    def verify_tests(self, tests):
-        return list(map(self.verify_test, tests))
 
     def verify_test(self, test):
         validity_check = test.is_valid()
         if type(validity_check) is Right:
-            pact = self.get_pact(test.pact_uri)
-            print(pact)
-
-            pact_states = list(map(lambda i: i['providerState'], pact['interactions']))
-            test_states = list(map(lambda s: s.state, test.states))
-
-            for pact_state in pact_states:
-                if pact_state not in test_states:
-                    msg = MISSING_STATE + '"' + pact_state + '".'
-                    return Left(msg)
-                self.verify_state(test.states, pact_state)
-        else:
-            return validity_check
-
-    def verify_state(self, states, provider_state):
-        # for s in states:
-        #     print('\t' + s.state)
-        # print(providerState)
-        # print('PACT HELPER SETUP')
-        # print('EXECUTE STATE')
-        # print('CREATE REQUEST')
-        # print('EXECUTE REQUEST')
-        # print('VERIFY RESPONSE')
-        # print('PACT HELPER TEAR DOWN')
-        pass
-
-    @staticmethod
-    def get_pact(location):         # pragma: no cover
-        return get_pact(location)   # pragma: no cover
+            pact = get_pact(test.pact_uri)
+            if type(pact) is Right:
+                interactions = pact.value.get('interactions', {})
+                test_results = [verify_state(i, self.pact_helper, test) for i in interactions]
+                return {'test': test.__class__.__name__, 'results': test_results}
+            return pact
+        return validity_check
 
     def collect_tests(self):
         root = self.config.consumer_tests_path
@@ -67,7 +44,7 @@ class ServiceConsumerTestSuiteRunner(object):
                 if inspect.isclass(obj) and len(inspect.getmro(obj)) > 2:
                     test_parent = inspect.getmro(obj)[1].__name__
                     if test_parent == 'ServiceConsumerTest':
-                        tests.append(obj)
+                        tests.append(obj())
 
         if not files:
             return Left(MISSING_TESTS)
