@@ -24,3 +24,25 @@ Setup
 .. code:: bash
 
   python setup.py install
+
+Test
+----
+
+It is possible to run the tests locally with Docker through the following command:
+
+.. code:: bash
+
+  $ ./bin/test
+
+By default this command tests the library against Python 3.6. It is possible to specify the Python version as follows:
+
+.. code:: bash
+
+  $ ./bin/test <ENV>
+
+Available values for `ENV` are: :code:`py27`, :code:`py33`, :code:`py34`, :code:`py35` and :code:`py36`. It is also
+possible to test all the versions at once with:
+
+.. code:: bash
+
+  $ ./bin/test all
