@@ -28,10 +28,10 @@ def test_verify(monkeypatch):
     actual_response = sct.verify()
 
     assert len(actual_response) == 1
-    assert actual_response[0]['test'] == 'TestRestaurantCustomer'
-    assert len(actual_response[0]['results']) == 1
+    assert actual_response[0].value['test'] == 'TestRestaurantCustomer'
+    assert len(actual_response[0].value['results']) == 1
 
-    test_outcome = actual_response[0]['results'][0].value
+    test_outcome = actual_response[0].value['results'][0].value
     assert test_outcome['state'] == 'the breakfast is available'
     assert test_outcome['status'] == 'FAILED'
     assert len(test_outcome['errors']) == 1
