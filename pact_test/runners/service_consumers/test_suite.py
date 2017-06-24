@@ -29,7 +29,7 @@ class ServiceConsumerTestSuiteRunner(object):
             if type(pact) is Right:
                 interactions = pact.value.get('interactions', {})
                 test_results = [verify_state(i, self.pact_helper, test) for i in interactions]
-                return {'test': test.__class__.__name__, 'results': test_results}
+                return Right({'test': test.__class__.__name__, 'results': test_results})
             return pact
         return validity_check
 
