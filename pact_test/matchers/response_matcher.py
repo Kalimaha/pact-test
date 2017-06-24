@@ -1,4 +1,5 @@
 from pact_test.either import *
+from pact_test.constants import FAILED
 
 
 def match(interaction, pact_response):
@@ -42,8 +43,12 @@ def _to_dict(headers):
 
 
 def _build_error_message(section, expected, actual):
-    return 'Non-matching ' + section + ' for the response. Expected:\n\n\t' + \
-           str(expected) + '\n\nReceived:\n\n\t' + str(actual)
+    return {
+        'actual': actual,
+        'status': FAILED,
+        'expected': expected,
+        'message': section.capitalize() + ' is incorrect'
+    }
 
 
 def _is_subset(expected, actual):

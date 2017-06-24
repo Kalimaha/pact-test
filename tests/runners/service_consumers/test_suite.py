@@ -35,7 +35,7 @@ def test_verify(monkeypatch):
     assert test_outcome['state'] == 'the breakfast is available'
     assert test_outcome['status'] == 'FAILED'
     assert len(test_outcome['errors']) == 1
-    assert test_outcome['errors'][0].startswith('Non-matching headers')
+    assert test_outcome['errors'][0]['message'] == 'Headers is incorrect'
 
 
 def test_verify_bad_pact():

@@ -22,17 +22,24 @@ def valid_response():
 
 def test_non_matching_status():
     pact_response = PactResponse(status=200)
-    msg = 'Non-matching status for the response. Expected:\n\n\t' + \
-          str(418) + '\n\nReceived:\n\n\t' + str(200)
+    msg = {
+        'status': 'FAILED',
+        'message': 'Status is incorrect',
+        'expected': 418,
+        'actual': 200
+    }
 
     assert match(interaction, pact_response).value == msg
 
 
 def test_non_matching_headers():
     pact_response = PactResponse(status=418, headers=[('Date', '12-06-2017')])
-    msg = 'Non-matching headers for the response. Expected:\n\n\t' + \
-          str({'Content-Type': 'spam'}) + '\n\nReceived:\n\n\t' + \
-          str({'Date': '12-06-2017'})
+    msg = {
+        'status': 'FAILED',
+        'message': 'Headers is incorrect',
+        'expected': {'Content-Type': 'spam'},
+        'actual': {'Date': '12-06-2017'}
+    }
 
     assert match(interaction, pact_response).value == msg
 
@@ -43,9 +50,12 @@ def test_non_matching_body():
         headers=[('Content-Type', 'spam')],
         body={'spam': 'spam'}
     )
-    msg = 'Non-matching body for the response. Expected:\n\n\t' + \
-          str({'spam': 'eggs'}) + '\n\nReceived:\n\n\t' + \
-          str({'spam': 'spam'})
+    msg = {
+        'status': 'FAILED',
+        'message': 'Body is incorrect',
+        'expected': {'spam': 'eggs'},
+        'actual': {'spam': 'spam'}
+    }
     assert match(interaction, pact_response).value == msg
 
 
