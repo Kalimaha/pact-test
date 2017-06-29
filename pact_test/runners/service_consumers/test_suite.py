@@ -19,7 +19,7 @@ class ServiceConsumerTestSuiteRunner(object):
         if type(pact_helper) is Right:
             self.pact_helper = pact_helper.value
             tests = self.collect_tests().value
-            return list(map(self.verify_test, tests))
+            return Right(list(map(self.verify_test, tests)))
         return pact_helper
 
     def verify_test(self, test):
