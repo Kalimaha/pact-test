@@ -12,16 +12,19 @@ def _match_status(interaction, pact_response):
     expected = interaction['response'].get('status')
     actual = pact_response.status
 
-    if actual == expected:
+    if expected is None or actual == expected:
         return Right(interaction)
     return Left(_build_error_message('status', expected, actual))
 
 
 def _match_headers(interaction, pact_response):
-    expected = interaction['response'].get('headers')
+    expected = interaction['response'].get('headers', {})
     actual = _to_dict(pact_response.headers)
 
-    if _is_subset(expected, actual):
+    insensitive_expected = {k.upper(): v for (k, v) in expected.items()}
+    insensitive_actual = {k.upper(): v for (k, v) in actual.items()}
+
+    if _is_subset(insensitive_expected, insensitive_actual):
         return Right(interaction)
     return Left(_build_error_message('headers', expected, actual))
 

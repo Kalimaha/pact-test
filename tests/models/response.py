@@ -6,7 +6,7 @@ def test_default_body():
     assert r.body is None
 
 
-def test_deafult_headers():
+def test_default_headers():
     r = PactResponse()
     assert r.headers == []
 
