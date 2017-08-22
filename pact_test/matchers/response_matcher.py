@@ -58,4 +58,14 @@ def _is_subset(expected, actual):
     actual_items = actual.items() if actual else {}
     expected_items = expected.items() if expected else {}
 
-    return all(item in expected_items for item in actual_items)
+    stripped_actual_items = map(_strip_whitespaces_after_commas, actual_items)
+    stripped_expected_items = map(_strip_whitespaces_after_commas, expected_items)
+
+    return all(item in stripped_actual_items for item in stripped_expected_items)
+
+
+def _strip_whitespaces_after_commas(t):
+    k = t[0]
+    v = t[1].replace(', ', ',') if type(t[1]) is str else t[1]
+
+    return k, v

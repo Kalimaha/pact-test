@@ -4,13 +4,10 @@ from pact_test.matchers.response_matcher import match
 from tests.acceptance.acceptance_test_loader import load_acceptance_test
 
 
-def test_headers_match():
+def test_unexpected_header():
     data = load_acceptance_test(__file__)
 
-    response = PactResponse(headers=[
-        ('Accept', 'alligators'),
-        ('Content-Type', 'hippos')
-    ])
+    response = PactResponse(headers=[('Accept', 'alligators')])
     interaction = {'response': {'headers': data['expected']['headers']}}
     test_result = match(interaction, response)
 
