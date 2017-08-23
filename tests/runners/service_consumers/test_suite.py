@@ -25,7 +25,7 @@ def test_verify(monkeypatch):
         return Response()
     monkeypatch.setattr(requests, 'request', connect)
 
-    actual_response = sct.verify()
+    actual_response = sct.verify().value
 
     assert len(actual_response) == 1
     assert actual_response[0].value['test'] == 'TestRestaurantCustomer'
@@ -35,7 +35,7 @@ def test_verify(monkeypatch):
     assert test_outcome['state'] == 'the breakfast is available'
     assert test_outcome['status'] == 'FAILED'
     assert len(test_outcome['errors']) == 1
-    assert test_outcome['errors'][0].startswith('Non-matching headers')
+    assert test_outcome['errors'][0]['message'] == 'Headers is incorrect'
 
 
 def test_verify_bad_pact():
@@ -44,7 +44,7 @@ def test_verify_bad_pact():
                                               'resources',
                                               'service_consumers_bad_pact')
     sct = ServiceConsumerTestSuiteRunner(config)
-    actual_response = sct.verify()
+    actual_response = sct.verify().value
     assert type(actual_response[0]) is Left
 
 
