@@ -46,3 +46,10 @@ possible to test all the versions at once with:
 .. code:: bash
 
   $ ./bin/test all
+
+Upload New Version
+------------------
+
+.. code:: bash
+
+  $ python3 setup.py sdist upload
