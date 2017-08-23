@@ -7,13 +7,11 @@ from pact_test.clients.http_client import execute_interaction_request
 def verify_state(interaction, pact_helper, test_instance):
     state = find_state(interaction, test_instance)
     if type(state) is Right:
-        pact_helper.setup()
         state.value()
         output = _execute_request(pact_helper, interaction)
         if type(output) is Right:
             response_verification = match(interaction, output.value)
             output = _build_state_response(state, response_verification)
-        pact_helper.tear_down()
         return output
     return state
 

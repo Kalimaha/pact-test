@@ -6,6 +6,8 @@ from pact_test.constants import *
 from pact_test.utils.pact_utils import get_pact
 from pact_test.utils.pact_helper_utils import load_pact_helper
 from pact_test.runners.service_consumers.state_test import verify_state
+from pact_test.utils.logger import info
+from pact_test.utils.logger import error
 
 
 class ServiceConsumerTestSuiteRunner(object):
@@ -15,11 +17,21 @@ class ServiceConsumerTestSuiteRunner(object):
         self.config = config
 
     def verify(self):
+        info('Verify consumers: START')
         pact_helper = load_pact_helper(self.config.consumer_tests_path)
         if type(pact_helper) is Right:
             self.pact_helper = pact_helper.value
-            tests = self.collect_tests().value
-            return Right(list(map(self.verify_test, tests)))
+            tests = self.collect_tests()
+            if type(tests) is Right:
+                self.pact_helper.setup()
+                test_results = Right(list(map(self.verify_test, tests.value)))
+                self.pact_helper.tear_down()
+                return test_results
+            error('Verify consumers: EXIT WITH ERRORS:')
+            error(tests.value)
+            return tests
+        error('Verify consumers: EXIT WITH ERRORS:')
+        error(pact_helper.value)
         return pact_helper
 
     def verify_test(self, test):
@@ -43,7 +55,7 @@ class ServiceConsumerTestSuiteRunner(object):
             for name, obj in inspect.getmembers(test):
                 if inspect.isclass(obj) and len(inspect.getmro(obj)) > 2:
                     test_parent = inspect.getmro(obj)[1].__name__
-                    if test_parent == 'ServiceConsumerTest':
+                    if test_parent == TEST_PARENT:
                         tests.append(obj())
 
         if not files:

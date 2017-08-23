@@ -87,8 +87,6 @@ def test_verify_state(mocker):
         'errors': []
     }
 
-    assert pact_helper.setup.call_count == 1
-    assert pact_helper.tear_down.call_count == 1
     assert response == expected_response
 
 
