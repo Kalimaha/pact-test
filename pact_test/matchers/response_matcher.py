@@ -33,8 +33,16 @@ def _match_body(interaction, pact_response):
     expected = interaction['response'].get('body')
     actual = pact_response.body
 
-    if _is_subset(expected, actual):
+    if expected is None and actual is None:
         return Right(interaction)
+
+    if type(expected) is str and type(actual) is str and expected == actual:
+        return Right(interaction)
+
+    if type(expected) is dict and type(actual) is dict:
+        if _is_subset(expected, actual):
+            return Right(interaction)
+
     return Left(_build_error_message('body', expected, actual))
 
 
