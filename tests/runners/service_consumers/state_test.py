@@ -24,7 +24,7 @@ pact_helper = MyPactHelper()
 
 
 def test_find_state():
-    response = find_state(interaction, test_instance).value
+    response = find_state(interaction, '', test_instance).value
     assert type(response).__name__.endswith('method')
 
 
@@ -38,6 +38,7 @@ def test_missing_state():
     response = verify_state(i, pact_helper, test_instance).value
     expected_response = {
         'state': 'Catch me if you can',
+        'description': 'Description',
         'status': 'FAILED',
         'errors': ['Missing state implementation for "Catch me if you can"']
     }
@@ -52,12 +53,13 @@ def test_find_state_missing():
     bad_test_instance = BadTest()
     expected_response = {
         'state': 'some books exist',
+        'description': 'Description',
         'status': 'FAILED',
         'errors': [
             'Missing state implementation for "some books exist"'
         ]
     }
-    response = find_state(interaction, bad_test_instance).value
+    response = find_state(interaction, 'Description', bad_test_instance).value
     assert response == expected_response
 
 
@@ -83,17 +85,17 @@ def test_verify_state(mocker):
     response = verify_state(interaction, pact_helper, test_instance).value
     expected_response = {
         'state': 'some books exist',
+        'description': 'Description',
         'status': 'PASSED',
         'errors': []
     }
 
-    assert pact_helper.setup.call_count == 1
-    assert pact_helper.tear_down.call_count == 1
     assert response == expected_response
 
 
 interaction = {
     'providerState': 'some books exist',
+    'description': 'Description',
     'request': {
         'method': 'GET',
         'path': '',

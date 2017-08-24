@@ -5,6 +5,7 @@ from pact_test.either import *
 from pact_test import PactHelper
 from pact_test.constants import MISSING_SETUP
 from pact_test.constants import MISSING_TEAR_DOWN
+from pact_test.constants import EXTEND_PACT_HELPER
 from pact_test.constants import MISSING_PACT_HELPER
 
 
@@ -21,6 +22,8 @@ def _load_user_class(user_module):
         if inspect.isclass(obj) and len(inspect.getmro(obj)) > 2 and issubclass(obj, PactHelper):
             user_class = obj()
 
+    if user_class is None:
+        return Left(EXTEND_PACT_HELPER)
     if hasattr(user_class, 'setup') is False:
         return Left(MISSING_SETUP)
     if hasattr(user_class, 'tear_down') is False:

@@ -39,7 +39,8 @@ def test_load_user_class_missing_setup():
 
 def test_load_user_class_missing_tear_down():
     consumer_tests_path = os.path.join(os.getcwd(), 'tests',
-                                       'resources', 'pact_helper_no_tear_down')
+                                       'resources',
+                                       'pact_helper_no_tear_down')
     pact_helper = load_pact_helper(consumer_tests_path).value
 
     error_message = 'Missing "tear_down" method in "pact_helper.py".'
@@ -51,3 +52,13 @@ def test_load_pact_helper():
                                        'resources', 'pact_helper')
     pact_helper = load_pact_helper(consumer_tests_path).value
     assert issubclass(pact_helper.__class__, PactHelper)
+
+
+def test_not_extending_pact_helper():
+    consumer_tests_path = os.path.join(os.getcwd(), 'tests',
+                                       'resources',
+                                       'pact_helper_no_super_class')
+    pact_helper = load_pact_helper(consumer_tests_path).value
+
+    error_message = 'Pact Helper class must extend pact_test.PactHelper'
+    assert pact_helper == error_message
