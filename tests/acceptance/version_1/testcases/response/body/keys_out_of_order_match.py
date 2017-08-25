@@ -5,11 +5,14 @@ from pact_test.matchers.response_matcher import match
 from tests.acceptance.acceptance_test_loader import load_acceptance_test
 
 
-@pytest.mark.skip(reason="TravisCI error")
-def test_matching_plain_text():
+@pytest.mark.skip(reason="requires further investigation")
+def test_different_values():
     data = load_acceptance_test(__file__)
 
-    response = PactResponse(body='alligator named mary')
+    response = PactResponse(body={
+        'favouriteColours': ['red', 'blue'],
+        'favouriteNumber': 7
+    })
     interaction = {'response': {'body': data['expected']['body']}}
     test_result = match(interaction, response)
 

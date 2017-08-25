@@ -40,10 +40,22 @@ def _match_body(interaction, pact_response):
         return Right(interaction)
 
     if type(expected) is dict and type(actual) is dict:
-        if _is_subset(expected, actual):
+        if _match_dicts(expected, actual):
             return Right(interaction)
 
     return Left(_build_error_message('body', expected, actual))
+
+
+def _match_dicts(expected, actual):
+    expected_keys = expected.keys()
+    actual_keys = actual.keys()
+    all_keys = set(actual_keys).issubset(set(expected_keys))
+
+    all_values = True
+    for (k1, v1), (k2, v2) in zip(actual.items(), expected.items()):
+        all_values = all_values and (v1 == v2)
+
+    return all_keys and all_values
 
 
 def _to_dict(headers):
