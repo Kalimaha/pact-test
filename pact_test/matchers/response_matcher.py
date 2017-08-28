@@ -36,8 +36,12 @@ def _match_body(interaction, pact_response):
     if expected is None and actual is None:
         return Right(interaction)
 
-    if type(expected) is str and type(actual) is str and expected == actual:
-        return Right(interaction)
+    try:
+        if (type(expected) is str or type(expected) is unicode) and type(actual) is str and expected == actual:
+            return Right(interaction)
+    except NameError:
+        if type(expected) is str and type(actual) is str and expected == actual:
+            return Right(interaction)
 
     if type(expected) is dict and type(actual) is dict:
         if _match_dicts(expected, actual):
