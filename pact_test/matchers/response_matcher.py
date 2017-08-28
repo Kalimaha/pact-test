@@ -36,26 +36,48 @@ def _match_body(interaction, pact_response):
     if expected is None and actual is None:
         return Right(interaction)
 
-    if type(expected) is str and type(actual) is str and expected == actual:
+    if _is_string(expected) and _is_string(actual) and expected == actual:
         return Right(interaction)
 
-    if type(expected) is dict and type(actual) is dict:
-        if _match_dicts(expected, actual):
+    if type(expected) is dict and type(actual) is dict and _match_dicts_all_keys_and_values(expected, actual):
             return Right(interaction)
 
     return Left(_build_error_message('body', expected, actual))
 
 
-def _match_dicts(expected, actual):
-    expected_keys = expected.keys()
-    actual_keys = actual.keys()
-    all_keys = set(actual_keys).issubset(set(expected_keys))
+def _is_string(text):
+    try:
+        return True if (type(text) is str or type(text) is unicode) else False
+    except NameError:
+        return True if type(text) is str else False
 
-    all_values = True
-    for (k1, v1), (k2, v2) in zip(actual.items(), expected.items()):
-        all_values = all_values and (v1 == v2)
+
+def _match_dicts_all_keys_and_values(d1, d2):
+    d1_keys = d1.keys()
+    d2_keys = d2.keys()
+
+    _delete_extra_keys(d1, d2)
+
+    all_keys = set(d2_keys).issubset(set(d1_keys))
+    all_values = _match_dicts_all_values(d1, d2)
 
     return all_keys and all_values
+
+
+def _match_dicts_all_values(d1, d2):
+    all_values = True
+    for (k1, v1), (k2, v2) in zip(sorted(d2.items()), sorted(d1.items())):
+        all_values = all_values and (v1 == v2)
+    return all_values
+
+
+def _delete_extra_keys(d1, d2):
+    extra_keys = list(set(d2.keys()) - set(d1.keys()))
+    for extra_key in extra_keys:
+        d2.pop(extra_key, None)
+    for (k1, v1), (k2, v2) in zip(sorted(d1.items()), sorted(d2.items())):
+        if type(v1) is dict and type(v2) is dict:
+            _delete_extra_keys(v1, v2)
 
 
 def _to_dict(headers):
