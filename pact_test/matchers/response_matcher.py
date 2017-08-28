@@ -56,7 +56,7 @@ def _match_dicts(expected, actual):
     all_keys = set(actual_keys).issubset(set(expected_keys))
 
     all_values = True
-    for (k1, v1), (k2, v2) in zip(actual.items(), expected.items()):
+    for (k1, v1), (k2, v2) in zip(sorted(actual.items()), sorted(expected.items())):
         all_values = all_values and (v1 == v2)
 
     return all_keys and all_values
