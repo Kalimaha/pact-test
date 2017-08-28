@@ -62,6 +62,16 @@ of an hypothetical restaurant service implemented with the most popular Python w
 
 There are few things required to setup and run consumer tests.
 
+Installation
+~~~~~~~~~~~~
+
+Pact Test is distributed through `PyPi <https://pypi.python.org/pypi/pact-test>`_ so it can be easily included in the
+:code:`requirements.txt` file or normally installed with :code:`pip`:
+
+.. code:: bash
+
+  $ pip install pact-test
+
 Pact Helper
 ~~~~~~~~~~~
 
@@ -102,7 +112,7 @@ honouring the pacts, a provider needs to define such states. For example:
 
 .. code:: python
 
-    @has_pact_with('Restaurant Service')
+    @honours_pact_with('UberEats')
     @pact_uri('http://Kalimaha.github.io/src/pacts/pact.json')
     class UberEats(ServiceConsumerTest):
 
@@ -144,7 +154,7 @@ Setup
 
 .. code:: bash
 
-  python setup.py install
+  python3 setup.py install
 
 Test
 ----
@@ -174,3 +184,9 @@ Upload New Version
 .. code:: bash
 
   $ python3 setup.py sdist upload
+
+With `Python Wheels <http://pythonwheels.com/>`_:
+
+.. code:: bash
+  $ python3 setup.py sdist bdist_wheel
+  $ twine upload dist/*
