@@ -1,7 +1,7 @@
 from pact_test.models.service_consumer_test import *
 
 
-@has_pact_with('Restaurant')
+@honours_pact_with('Restaurant')
 @pact_uri('http://google.com/')
 class TestRestaurantCustomer(ServiceConsumerTest):
 

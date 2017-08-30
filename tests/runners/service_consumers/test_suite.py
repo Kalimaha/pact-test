@@ -107,7 +107,7 @@ def test_collect_tests():
 
     test = tests[0]
     assert test.pact_uri == 'tests/resources/pact_files/simple.json'
-    assert test.has_pact_with == 'Restaurant'
+    assert test.honours_pact_with == 'Restaurant'
 
     state = next(test.states)
     assert state.state == 'the breakfast is available'
@@ -121,7 +121,7 @@ def test_invalid_test():
     test = module.TestRestaurantCustomer()
 
     t = ServiceConsumerTestSuiteRunner(None)
-    msg = 'Missing setup for "has_pact_with"'
+    msg = 'Missing setup for "honours_pact_with"'
     assert t.verify_test(test).value.startswith(msg)
 
 
