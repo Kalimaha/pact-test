@@ -10,7 +10,7 @@ setup(
     license='LICENSE',
     long_description=open('README.rst').read(),
     description='Python implementation for Pact (http://pact.io/)',
-    install_requires=['requests'],
+    install_requires=['requests', 'flask'],
     setup_requires=['pytest-runner'],
     tests_require=[
         'pytest>=3.0',
