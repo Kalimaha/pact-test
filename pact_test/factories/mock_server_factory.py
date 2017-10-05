@@ -17,3 +17,6 @@ class MockServerFactory(Thread):
 
     def shutdown(self):
         self.server.shutdown()
+
+    def request(self):
+        return self.mock_server.request
