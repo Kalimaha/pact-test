@@ -16,7 +16,10 @@ ARCHIVE = []
 def build_proxy(mock_response=PactResponse()):
     class Proxy(SimpleHTTPServer.SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
-            super(Proxy, self).__init__(*args, **kwargs)
+            try:
+                super(Proxy, self).__init__(*args, **kwargs)
+            except TypeError:
+                Proxy.__init__(self, *args, **kwargs)
             self.mock_response = mock_response
 
         def do_GET(self):
