@@ -16,10 +16,7 @@ ARCHIVE = []
 def build_proxy(mock_response=PactResponse()):
     class Proxy(SimpleHTTPServer.SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
-            try:
-                super(Proxy, self).__init__(*args, **kwargs)
-            except TypeError:
-                Proxy.__init__(self, *args, **kwargs)
+            SimpleHTTPServer.SimpleHTTPRequestHandler.__init__(self, *args, **kwargs)
             self.mock_response = mock_response
 
         def do_GET(self):
@@ -40,7 +37,7 @@ def build_proxy(mock_response=PactResponse()):
 
         @staticmethod
         def read_request_data(other_self):
-            header_value = other_self.headers['Content-Length']
+            header_value = other_self.headers.get('Content-Length')
             data_length = int(header_value) if header_value is not None else None
             return other_self.rfile.read(data_length) if data_length is not None else None
 
