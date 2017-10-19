@@ -5,6 +5,8 @@ from pact_test.either import *
 from pact_test.constants import *
 from pact_test.utils.logger import error
 from pact_test.utils.logger import debug
+from pact_test.models.response import PactResponse
+from pact_test.servers.mock_server import MockServer
 
 
 class ServiceProviderTestSuiteRunner(object):
@@ -21,12 +23,31 @@ class ServiceProviderTestSuiteRunner(object):
             for test in tests.value:
                 test_verification = test.is_valid()
                 if type(test_verification) is Right:
-                    pass
+                    for decorated_method in test.decorated_methods:
+                        mock_response = self.build_expected_response(decorated_method)
+                        mock_server = MockServer(mock_response=mock_response, port=9999)
+                        mock_server.start()
+                        debug('Server is running')
+                        decorated_method()
+                        mock_server.shutdown()
+                        report = mock_server.report()
+                        if len(report) == 0:
+                            error('Verify providers: EXIT WITH ERRORS:')
+                            error('  No request made for ' + str(decorated_method.__name__))
+                            return Left('No request made for ' + str(decorated_method.__name__))
                 error('Verify providers: EXIT WITH ERRORS:')
                 error(test_verification.value)
         error('Verify providers: EXIT WITH ERRORS:')
         error(tests.value)
         return tests
+
+    @staticmethod
+    def build_expected_response(decorated_method):
+        return PactResponse(
+            body=decorated_method.will_respond_with.get('body'),
+            status=decorated_method.will_respond_with.get('status'),
+            headers=decorated_method.will_respond_with.get('headers')
+        )
 
     def collect_tests(self):
         root = self.config.provider_tests_path

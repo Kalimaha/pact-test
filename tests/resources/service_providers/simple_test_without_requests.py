@@ -11,10 +11,3 @@ class SimpleTest(ServiceProviderTest):
     @will_respond_with({'status': 200})
     def test_get_book(self):
         pass
-
-    @given('several books exist')
-    @upon_receiving('a request for a book')
-    @with_request({'method': 'get', 'path': '/books/'})
-    @will_respond_with({'status': 200})
-    def test_get_books(self):
-        pass
