@@ -42,9 +42,14 @@ def build_proxy(mock_response=PactResponse()):
             return other_self.rfile.read(data_length) if data_length is not None else None
 
         def format_request(self, http_method, data):
+            path_and_query = self.path.split('?')
+            path = path_and_query[0]
+            query = '?' + path_and_query[1] if len(path_and_query) == 2 else ''
+
             return {
                 'http_method': http_method,
-                'path': self.path,
+                'path': path,
+                'query': query,
                 'data': json.loads(data.decode('utf-8')) if data is not None else data,
                 'headers': list(dict([(key, value)]) for key, value in self.headers.items())
             }
