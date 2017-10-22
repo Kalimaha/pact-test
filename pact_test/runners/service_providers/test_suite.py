@@ -5,65 +5,30 @@ from pact_test.either import *
 from pact_test.constants import *
 from pact_test.utils.logger import error
 from pact_test.utils.logger import debug
-from pact_test.models.response import PactResponse
-from pact_test.servers.mock_server import MockServer
+from pact_test.runners.service_providers.request_test import verify_request
 
 
 class ServiceProviderTestSuiteRunner(object):
     def __init__(self, config):
         self.config = config
-        debug(config)
-        debug(self.config.provider_tests_path)
 
     def verify(self):
         debug('Verify providers: START')
         tests = self.collect_tests()
         if type(tests) is Right:
             debug(str(len(tests.value)) + ' test(s) found.')
-            test_results = []
             for test in tests.value:
-                test_result = dict()
-                test_result['service_consumer'] = test.service_consumer
-                test_result['has_pact_with'] = test.has_pact_with
-                test_result['states'] = []
                 test_verification = test.is_valid()
                 if type(test_verification) is Right:
+                    provider_requests = []
                     for decorated_method in test.decorated_methods:
-                        state = dict()
-                        mock_response = self.build_expected_response(decorated_method)
-                        mock_server = MockServer(mock_response=mock_response, port=9999)
-                        mock_server.start()
-                        debug('Server is running')
-                        decorated_method()
-                        mock_server.shutdown()
-                        report = mock_server.report()
-                        if len(report) > 0:
-                            state['given'] = decorated_method.given
-                            state['upon_receiving'] = decorated_method.upon_receiving
-                            state['expected_request'] = decorated_method.with_request
-                            state['request'] = {'http_method': None, 'body': None, 'headers': None}
-                            state['request']['http_method'] = report[0]['http_method']
-                            state['request']['body'] = report[0]['data']
-                            state['request']['headers'] = report[0]['headers']
-                            test_result['states'].append(state)
-                            test_results.append(test_result)
-                            return Right(test_results)
-                        error('Verify providers: EXIT WITH ERRORS:')
-                        error('  No request made for ' + str(decorated_method.__name__))
-                        return Left('No request made for ' + str(decorated_method.__name__))
+                        provider_requests.append(verify_request(decorated_method))
+                    return Right(provider_requests)
                 error('Verify providers: EXIT WITH ERRORS:')
                 error(test_verification.value)
         error('Verify providers: EXIT WITH ERRORS:')
         error(tests.value)
         return tests
-
-    @staticmethod
-    def build_expected_response(decorated_method):
-        return PactResponse(
-            body=decorated_method.will_respond_with.get('body'),
-            status=decorated_method.will_respond_with.get('status'),
-            headers=decorated_method.will_respond_with.get('headers')
-        )
 
     def collect_tests(self):
         root = self.config.provider_tests_path

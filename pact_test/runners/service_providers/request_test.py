@@ -1,5 +1,4 @@
 from pact_test.either import *
-from pact_test.utils.logger import debug
 from pact_test.models.request import PactRequest
 from pact_test.models.response import PactResponse
 from pact_test.servers.mock_server import MockServer
@@ -9,32 +8,17 @@ from pact_test.matchers.request_matcher import match
 def verify_request(decorated_method, port=9999):
     mock_response = build_expected_response(decorated_method)
     expected_request = build_expected_request(decorated_method)
+
     mock_server = MockServer(mock_response=mock_response, port=port)
     mock_server.start()
-    debug('Server is running')
     decorated_method()
     mock_server.shutdown()
     report = mock_server.report()
+
     if len(report) is 0:
-        return Left('Missing request(s) for "' +
-                    format_message(decorated_method) + '"')
+        return Left('Missing request(s) for "' + format_message(decorated_method) + '"')
     actual_request = build_actual_request(report[0])
     return match(actual_request, expected_request)
-
-
-def requests_match(expected, actual):
-    if expected.method.upper() != actual.method.upper():
-        return Left('HTTP methods do not match. Expected "' +
-                    expected.method.upper() +
-                    '", got "' + actual.method.upper() + '".')
-    if expected.path != actual.path:
-        return Left('Paths do not match. Expected "' +
-                    expected.path +
-                    '", got "' + actual.path + '".')
-    if expected.query != actual.query:
-        return Left('Queries do not match. Expected "' +
-                    expected.query +
-                    '", got "' + actual.query + '".')
 
 
 def build_expected_response(decorated_method):
@@ -56,12 +40,11 @@ def build_expected_request(decorated_method):
 
 
 def build_actual_request(request):
-    print(request.get('headers'))
     return PactRequest(
         path=request.get('path'),
         query=request.get('query'),
-        method=request.get('http_method'),
-        body=request.get('data'),
+        method=request.get('method'),
+        body=request.get('body'),
         headers=request.get('headers')
     )
 

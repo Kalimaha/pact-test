@@ -47,10 +47,10 @@ def build_proxy(mock_response=PactResponse()):
             query = '?' + path_and_query[1] if len(path_and_query) == 2 else ''
 
             return {
-                'http_method': http_method,
+                'method': http_method,
                 'path': path,
                 'query': query,
-                'data': json.loads(data.decode('utf-8')) if data is not None else data,
+                'body': json.loads(data.decode('utf-8')) if data is not None else data,
                 'headers': list(dict([(key, value)]) for key, value in self.headers.items())
             }
 

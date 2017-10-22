@@ -15,9 +15,9 @@ def test_get_request():
     requests.get('http://localhost:1235/')
     s.shutdown()
     stored_request = s.report()[0]
-    assert stored_request['http_method'] == 'GET'
+    assert stored_request['method'] == 'GET'
     assert stored_request['path'] == '/'
-    assert stored_request['data'] is None
+    assert stored_request['body'] is None
 
 
 def test_post_request():
@@ -26,9 +26,9 @@ def test_post_request():
     requests.post('http://localhost:1236/', data='{"spam": "eggs"}')
     s.shutdown()
     stored_request = s.report()[0]
-    assert stored_request['http_method'] == 'POST'
+    assert stored_request['method'] == 'POST'
     assert stored_request['path'] == '/'
-    assert stored_request['data'] == {'spam': 'eggs'}
+    assert stored_request['body'] == {'spam': 'eggs'}
 
 
 def test_put_request():
@@ -37,9 +37,9 @@ def test_put_request():
     requests.put('http://localhost:1237/', data='{"spam": "eggs"}')
     s.shutdown()
     stored_request = s.report()[0]
-    assert stored_request['http_method'] == 'PUT'
+    assert stored_request['method'] == 'PUT'
     assert stored_request['path'] == '/'
-    assert stored_request['data'] == {'spam': 'eggs'}
+    assert stored_request['body'] == {'spam': 'eggs'}
 
 
 def test_delete_request():
@@ -48,6 +48,6 @@ def test_delete_request():
     requests.delete('http://localhost:1238/', data='{"spam": "eggs"}')
     s.shutdown()
     stored_request = s.report()[0]
-    assert stored_request['http_method'] == 'DELETE'
+    assert stored_request['method'] == 'DELETE'
     assert stored_request['path'] == '/'
-    assert stored_request['data'] == {'spam': 'eggs'}
+    assert stored_request['body'] == {'spam': 'eggs'}
