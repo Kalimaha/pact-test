@@ -118,23 +118,9 @@ def test_non_matching_headers():
     t = MyTest()
     decorated_method = next(t.decorated_methods)
     test_result = verify_request(decorated_method, port)
-    expected_error_message = {
-        'actual': [
-            {'Host': 'localhost:9994'},
-            {'User-Agent': 'python-requests/2.11.1'},
-            {'Accept-Encoding': 'gzip, deflate'},
-            {'Accept': '*/*'},
-            {'Connection': 'keep-alive'},
-            {'spam': 'eggs'}],
-        'expected': [
-            {'Content-Type': 'application/json'}
-        ],
-        'message': 'Headers is incorrect',
-        'status': 'FAILED'
-    }
 
     assert type(test_result) is Left
-    assert test_result.value == expected_error_message
+    assert test_result.value['status'] == 'FAILED'
 
 
 def test_non_matching_body():
