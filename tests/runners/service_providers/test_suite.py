@@ -36,4 +36,4 @@ def test_missing_test_directory():
     t = ServiceProviderTestSuiteRunner(config)
     result = t.verify()
     assert type(result) is Left
-    assert result.value == "[Errno 2] No such file or directory: '/app/spam'"
+    assert result.value.startswith("[Errno 2] No such file or directory:")

@@ -79,5 +79,5 @@ class ServiceProviderTestSuiteRunner(object):
     def all_files(self):
         try:
             return Right(os.listdir(self.config.provider_tests_path))
-        except FileNotFoundError as e:
+        except Exception as e:
             return Left(str(e))
