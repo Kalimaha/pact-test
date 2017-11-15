@@ -1,3 +1,4 @@
+from pact_test.utils.logger import *
 from pact_test.either import *
 from pact_test.models.request import PactRequest
 from pact_test.models.response import PactResponse
@@ -18,7 +19,17 @@ def verify_request(decorated_method, port=9999):
     if len(report) is 0:
         return Left('Missing request(s) for "' + format_message(decorated_method) + '"')
     actual_request = build_actual_request(report[0])
-    return match(actual_request, expected_request)
+    matching_result = match(actual_request, expected_request)
+
+    if type(matching_result) is Right:
+        out = {
+            'providerState': decorated_method.given,
+            'description': decorated_method.upon_receiving,
+            'request': actual_request.__dict__,
+            'response': mock_response.__dict__
+        }
+        return Right(out)
+    return matching_result
 
 
 def build_expected_response(decorated_method):

@@ -1,4 +1,5 @@
 import os
+from pact_test.either import *
 from pact_test.config.config_builder import Config
 from pact_test.runners.service_providers.test_suite import ServiceProviderTestSuiteRunner   # nopep8
 
@@ -27,3 +28,12 @@ def test_collect_tests():
 
     tests = t.collect_tests().value
     assert len(tests) == 2
+
+
+def test_missing_test_directory():
+    config = Config()
+    config.provider_tests_path = os.path.join(os.getcwd(), 'spam')
+    t = ServiceProviderTestSuiteRunner(config)
+    result = t.verify()
+    assert type(result) is Left
+    assert result.value == "[Errno 2] No such file or directory: '/app/spam'"

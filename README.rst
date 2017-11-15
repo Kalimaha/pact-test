@@ -10,7 +10,7 @@
     :target: https://travis-ci.org/Kalimaha/pact-test
 .. image:: https://coveralls.io/repos/github/Kalimaha/pact-test/badge.svg?branch=development
     :target: https://coveralls.io/github/Kalimaha/pact-test?branch=development
-.. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg 
+.. image:: https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg
     :target: https://saythanks.io/to/Kalimaha
 
 Pact Test for Python
@@ -58,7 +58,7 @@ of an hypothetical restaurant service implemented with the most popular Python w
 
 * Djanjo (*TODO*)
 * `Flask <https://github.com/Kalimaha/restaurant-service-flask>`_
-* Pyramid (*TODO*)
+* `Pyramid <https://github.com/Kalimaha/restaurant-service-pyramid>`_
 
 There are few things required to setup and run consumer tests.
 
