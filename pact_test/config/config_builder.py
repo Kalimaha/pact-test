@@ -6,6 +6,7 @@ class Config(object):
     pact_broker_uri = None
     consumer_tests_path = 'tests/service_consumers'
     provider_tests_path = 'tests/service_providers'
+    pacts_path = 'pacts'
     CONFIGURATION_FILE = '.pact.json'
 
     def __init__(self):

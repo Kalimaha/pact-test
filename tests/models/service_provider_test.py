@@ -78,3 +78,21 @@ def test_missing_method_decorators():
         assert False
     except StopIteration:
         assert True
+
+
+def test_missing_service_consumer():
+    @has_pact_with('Restaurant Customer')
+    class MyTest(ServiceProviderTest):
+        pass
+
+    msg = 'Missing setup for "service_consumer"'
+    assert MyTest().is_valid().value.startswith(msg)
+
+
+def test_missing_has_pact_with():
+    @service_consumer('Restaurant Customer')
+    class MyTest(ServiceProviderTest):
+        pass
+
+    msg = 'Missing setup for "has_pact_with"'
+    assert MyTest().is_valid().value.startswith(msg)

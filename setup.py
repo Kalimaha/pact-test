@@ -3,14 +3,14 @@ from setuptools import find_packages
 
 setup(
     name='pact-test',
-    version='0.2.2',
+    version='0.3.25',
     author='Guido Barbaglia',
     author_email='guido.barbaglia@gmail.com',
     packages=find_packages(),
     license='LICENSE',
     long_description=open('README.rst').read(),
     description='Python implementation for Pact (http://pact.io/)',
-    install_requires=['requests', 'flask'],
+    install_requires=['requests'],
     setup_requires=['pytest-runner'],
     tests_require=[
         'pytest>=3.0',

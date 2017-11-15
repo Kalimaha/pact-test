@@ -1,3 +1,7 @@
+from pact_test.either import *
+from pact_test.constants import *
+
+
 class ServiceProviderTest(object):
     service_consumer = None
     has_pact_with = None
@@ -15,6 +19,15 @@ class ServiceProviderTest(object):
                     )
             if check:
                 yield obj
+
+    def is_valid(self):
+        if self.service_consumer is None:
+            msg = MISSING_SERVICE_CONSUMER + __file__
+            return Left(msg)
+        if self.has_pact_with is None:
+            msg = MISSING_HAS_PACT_WITH + __file__
+            return Left(msg)
+        return Right(True)
 
 
 def service_consumer(service_consumer_value):

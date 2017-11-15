@@ -1,70 +1,100 @@
-from flask import Flask
-from flask import request
-from flask import Response
-from pact_test.constants import *
-from pact_test.models.request import PactRequest
+import json
+from pact_test.utils.logger import debug
+from threading import Thread
 from pact_test.models.response import PactResponse
+try:
+    import socketserver as SocketServer
+    import http.server as SimpleHTTPServer
+except ImportError:
+    import SocketServer
+    import SimpleHTTPServer
+
+
+ARCHIVE = []
+
+
+def build_proxy(mock_response=PactResponse()):
+    class Proxy(SimpleHTTPServer.SimpleHTTPRequestHandler):
+        def __init__(self, *args, **kwargs):
+            SimpleHTTPServer.SimpleHTTPRequestHandler.__init__(self, *args, **kwargs)
+            self.mock_response = mock_response
+
+        def do_GET(self):
+            data = self.read_request_data(self)
+            self.handle_request('GET', data)
+
+        def do_POST(self):
+            data = self.read_request_data(self)
+            self.handle_request('POST', data)
+
+        def do_PUT(self):
+            data = self.read_request_data(self)
+            self.handle_request('PUT', data)
+
+        def do_DELETE(self):
+            data = self.read_request_data(self)
+            self.handle_request('DELETE', data)
+
+        @staticmethod
+        def read_request_data(other_self):
+            header_value = other_self.headers.get('Content-Length')
+            data_length = int(header_value) if header_value is not None else None
+            return other_self.rfile.read(data_length) if data_length is not None else None
+
+        def format_request(self, http_method, data):
+            path_and_query = self.path.split('?')
+            path = path_and_query[0]
+            query = '?' + path_and_query[1] if len(path_and_query) == 2 else ''
+
+            return {
+                'method': http_method,
+                'path': path,
+                'query': query,
+                'body': json.loads(data.decode('utf-8')) if data is not None else data,
+                'headers': list(dict([(key, value)]) for key, value in self.headers.items())
+            }
+
+        def handle_request(self, http_method, data):
+            info = self.format_request(http_method, data)
+            ARCHIVE.append(info)
+            self.respond()
+
+        def respond(self):
+            self.send_response(int(mock_response.status))
+            for header in mock_response.headers:
+                for key, value in header.items():
+                    self.send_header(key, value)
+            self.end_headers()
+            self.wfile.write(str(mock_response.body).encode())
+
+    return Proxy
+
+
+class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
+    pass
 
 
 class MockServer(object):
 
-    def __init__(self, req, res):
-        if req is None:
-            raise Exception(MISSING_REQUEST)
+    def __init__(self, mock_response=PactResponse(), base_url='0.0.0.0', port=1234):
+        self.port = port
+        self.base_url = base_url
+        self.server = ThreadedTCPServer((self.base_url, self.port), build_proxy(mock_response))
+        self.server_thread = Thread(target=self.server.serve_forever)
+        self.server_thread.daemon = True
+        global ARCHIVE
+        ARCHIVE = []
 
-        if res is None:
-            raise Exception(MISSING_RESPONSE)
+    def start(self):
+        self.server_thread.start()
+        debug('PROXY SERVER LISTENING ON http://' + self.base_url + ':' + str(self.port))
 
-        self.request = self.build_request(req)
-        self.response = self.build_response(res)
-
-        self.app = Flask(__name__)
-        self.app.add_url_rule(self.request.path, view_func=self.spy, methods=[self.request.method, ])
-
-    def spy(self):
-        return self.success() if self.is_matching_request() else self.failure()
-
-    def success(self):
-        return Response(
-            response=self.response.body,
-            status=self.response.status,
-            headers=self.response.headers
-        )
-
-    def failure(self):
-        print('=== === === INSIDE failure === === ===')
-        return Response(
-            status=500,
-            response={
-                'message': 'Request is not matching the expectation',
-                'expected': {
-                    'body': self.request.body,
-                    'headers': self.request.headers
-                },
-                'actual': {
-                    'body': request.data,
-                    'headers': request.headers
-                }
-            }
-        )
-
-    def is_matching_request(self):
-        return True
+    def shutdown(self):
+        debug('SHUTTING DOWN SERVER...')
+        self.server.shutdown()
+        self.server.server_close()
+        debug('SHUTTING DOWN MOCK SERVER... DONE')
 
     @staticmethod
-    def build_request(user_request):
-        return PactRequest(
-            body=user_request.get('body'),
-            path=user_request.get('path') or '/',
-            query=user_request.get('query'),
-            method=user_request.get('method'),
-            headers=user_request.get('headers')
-        )
-
-    @staticmethod
-    def build_response(user_response):
-        return PactResponse(
-            status=user_response.get('status'),
-            body=user_response.get('body'),
-            headers=user_response.get('headers')
-        )
+    def report():
+        return ARCHIVE
