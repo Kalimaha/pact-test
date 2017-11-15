@@ -1,3 +1,6 @@
+import os
+import json
+from pact_test.utils.logger import *
 from pact_test.config.config_builder import Config
 from pact_test.utils.logger import log_consumers_test_results
 from pact_test.utils.logger import log_providers_test_results
@@ -22,3 +25,19 @@ def run_consumer_tests(config):
 def run_provider_tests(config):
     test_results = ServiceProviderTestSuiteRunner(config).verify()
     log_providers_test_results(test_results)
+    if type(test_results) is Right:
+        write_pact_files(config, test_results.value)
+
+
+def write_pact_files(config, pacts):
+    pacts_directory = os.path.join(os.getcwd(), config.pacts_path)
+    if not os.path.exists(pacts_directory):
+        info('Creating Pacts directory at: ' + str(pacts_directory))
+        os.makedirs(pacts_directory)
+
+    for pact in pacts:
+        filename = pact['consumer']['name'] + '_' + pact['provider']['name'] + '.json'
+        filename = filename.replace(' ', '_').lower()
+        info('Writing pact to: ' + filename)
+        with open(os.path.join(pacts_directory, filename), 'w+') as file:
+            file.write(json.dumps(pact, indent=2))
