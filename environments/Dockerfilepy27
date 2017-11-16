@@ -1,8 +1,7 @@
-FROM python:3.3.6-alpine
+FROM python:2.7.13-alpine
 
 RUN mkdir -p /app
 WORKDIR /app
 ADD requirements.txt /app
 RUN pip install -r requirements.txt
 ADD . /app
-RUN find . -name '*.pyc' -delete

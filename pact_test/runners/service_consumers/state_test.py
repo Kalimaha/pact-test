@@ -1,6 +1,5 @@
 from pact_test.either import *
 from pact_test.constants import *
-from pact_test.utils.logger import *
 from pact_test.matchers.response_matcher import match
 from pact_test.clients.http_client import execute_interaction_request
 
@@ -8,10 +7,7 @@ from pact_test.clients.http_client import execute_interaction_request
 def verify_state(interaction, pact_helper, test_instance):
     state = find_state(interaction, interaction['description'], test_instance)
     if type(state) is Right:
-        debug('Verify state: "' + str(state.value.state) + '"')
-        debug('Setup state for test: START')
         state.value()
-        debug('Setup state for test: DONE')
         output = _execute_request(pact_helper, interaction)
         if type(output) is Right:
             response_verification = match(interaction, output.value)
@@ -34,7 +30,6 @@ def _build_state_response(state, description, response_verification):
         return Right(_format_message(state.value.state, description, PASSED, []))
     else:
         errors = [response_verification.value]
-        debug(response_verification.value)
         return Left(_format_message(state.value.state, description, FAILED, errors))
 
 

@@ -1,7 +1,9 @@
 import os
 import json
-from pact_test.utils.logger import *
+from pact_test.either import *
+from pact_test.utils.logger import info
 from pact_test.config.config_builder import Config
+from pact_test.repositories.pact_broker import upload_pact
 from pact_test.utils.logger import log_consumers_test_results
 from pact_test.utils.logger import log_providers_test_results
 from pact_test.runners.service_consumers.test_suite import ServiceConsumerTestSuiteRunner
@@ -27,6 +29,16 @@ def run_provider_tests(config):
     log_providers_test_results(test_results)
     if type(test_results) is Right:
         write_pact_files(config, test_results.value)
+        upload_pacts(config, test_results.value)
+
+
+def upload_pacts(config, pacts):
+    for pact in pacts:
+        provider = pact['provider']['name']
+        consumer = pact['consumer']['name']
+        ack = upload_pact(provider, consumer, pact, base_url=config.pact_broker_uri)
+        if type(ack) is Left:
+            error(ack.value)
 
 
 def write_pact_files(config, pacts):
