@@ -19,6 +19,7 @@ class ServiceProviderTestSuiteRunner(object):
             debug(str(len(tests.value)) + ' test(s) found.')
             pacts = []
             for test in tests.value:
+                debug('Start: ' + test.service_consumer + ' has Pact with ' + test.has_pact_with)
                 test_verification = test.is_valid()
                 if type(test_verification) is Right:
                     pact = self.create_pact(test)
@@ -39,6 +40,7 @@ class ServiceProviderTestSuiteRunner(object):
     def create_pact(test):
         interactions = []
         for decorated_method in test.decorated_methods:
+            debug('  Verify interaction: ' + decorated_method.__name__)
             interactions.append(verify_request(decorated_method).value)
         pact = {
             'interactions': interactions,

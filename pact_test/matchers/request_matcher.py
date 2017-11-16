@@ -1,3 +1,4 @@
+from pact_test.utils.logger import *
 from pact_test.either import *
 from pact_test.matchers.matcher import *
 
@@ -22,10 +23,22 @@ def _match_body(actual, expected):
 
     if type(expected_body) is dict \
             and type(actual_body) is dict \
-            and match_dicts_all_keys_and_values(expected_body, actual_body):
+            and _match_dicts_all_keys_and_values(expected_body.copy(), actual_body.copy()):
             return Right(actual)
 
     return Left(build_error_message('body', expected_body, actual_body))
+
+
+def _match_dicts_all_keys_and_values(d1, d2):
+    d1_keys = d1.keys()
+    d2_keys = d2.keys()
+
+    # delete_extra_keys(d1, d2)
+
+    all_keys = set(d2_keys).issubset(set(d1_keys))
+    all_values = match_dicts_all_values(d1, d2)
+
+    return all_keys and all_values
 
 
 def _match_headers(actual, expected):

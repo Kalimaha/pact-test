@@ -43,7 +43,9 @@ def test_non_matching_http_method():
         'actual': 'POST',
         'expected': 'GET',
         'message': 'Method is incorrect',
-        'status': 'FAILED'
+        'status': 'FAILED',
+        'description': 'eggs',
+        'providerState': 'spam'
     }
 
     assert type(test_result) is Left
@@ -69,7 +71,9 @@ def test_non_matching_path():
         'actual': '/books/4242/',
         'expected': '/books/42/',
         'message': 'Path is incorrect',
-        'status': 'FAILED'
+        'status': 'FAILED',
+        'description': 'eggs',
+        'providerState': 'spam'
     }
 
     assert type(test_result) is Left
@@ -95,7 +99,9 @@ def test_non_matching_query():
         'actual': '?spam=eggs',
         'expected': '?eggs=bacon',
         'message': 'Query is incorrect',
-        'status': 'FAILED'
+        'status': 'FAILED',
+        'description': 'eggs',
+        'providerState': 'spam'
     }
 
     assert type(test_result) is Left
@@ -143,7 +149,9 @@ def test_non_matching_body():
         'actual': {'eggs': 'bacon'},
         'expected': '{"spam": "eggs"}',
         'message': 'Body is incorrect',
-        'status': 'FAILED'
+        'status': 'FAILED',
+        'description': 'eggs',
+        'providerState': 'spam'
     }
 
     assert type(test_result) is Left

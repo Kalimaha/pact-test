@@ -71,7 +71,9 @@ def build_proxy(mock_response=PactResponse()):
 
 
 class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
-    pass
+    def __init__(self, server_address, RequestHandlerClass):
+        self.allow_reuse_address = True
+        SocketServer.TCPServer.__init__(self, server_address, RequestHandlerClass)
 
 
 class MockServer(object):
@@ -86,6 +88,7 @@ class MockServer(object):
         ARCHIVE = []
 
     def start(self):
+        debug('STARTING PROXY SERVER...')
         self.server_thread.start()
         debug('PROXY SERVER LISTENING ON http://' + self.base_url + ':' + str(self.port))
 

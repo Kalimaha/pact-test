@@ -1,3 +1,4 @@
+from pact_test.utils.logger import *
 from pact_test.constants import FAILED
 
 

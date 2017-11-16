@@ -23,13 +23,20 @@ def verify_request(decorated_method, port=9999):
 
     if type(matching_result) is Right:
         out = {
+            'status': 'PASSED',
             'providerState': decorated_method.given,
             'description': decorated_method.upon_receiving,
             'request': actual_request.__dict__,
             'response': mock_response.__dict__
         }
         return Right(out)
-    return matching_result
+    else:
+        reason = matching_result.value.copy()
+        reason.update({
+            'providerState': decorated_method.given,
+            'description': decorated_method.upon_receiving
+        })
+        return Left(reason)
 
 
 def build_expected_response(decorated_method):

@@ -36,9 +36,11 @@ def upload_pacts(config, pacts):
     for pact in pacts:
         provider = pact['provider']['name']
         consumer = pact['consumer']['name']
-        ack = upload_pact(provider, consumer, pact, base_url=config.pact_broker_uri)
-        if type(ack) is Left:
-            error(ack.value)
+        is_uploadable = all(interaction['status'] == 'PASSED' for interaction in pact['interactions'])
+        if is_uploadable:
+            ack = upload_pact(provider, consumer, pact, base_url=config.pact_broker_uri)
+            if type(ack) is Left:
+                error(ack.value)
 
 
 def write_pact_files(config, pacts):
