@@ -3,7 +3,7 @@ import json
 
 
 class Config(object):
-    pact_broker_uri = None
+    pact_broker_uri = 'http://localhost:9292/'
     consumer_tests_path = 'tests/service_consumers'
     provider_tests_path = 'tests/service_providers'
     pacts_path = 'pacts'

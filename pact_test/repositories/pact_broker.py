@@ -7,6 +7,7 @@ PACT_BROKER_URL = 'http://localhost:9292/'
 
 
 def upload_pact(provider_name, consumer_name, pact, base_url=PACT_BROKER_URL):
+    print()
     pact = format_headers(pact)
     current_version = get_latest_version(consumer_name)
     if type(current_version) is Right:
@@ -20,6 +21,7 @@ def upload_pact(provider_name, consumer_name, pact, base_url=PACT_BROKER_URL):
         except requests.exceptions.ConnectionError as e:
             msg = 'Failed to establish a new connection with ' + base_url
             return Left(msg)
+    print()
 
 
 def get_latest_version(consumer_name, base_url=PACT_BROKER_URL):
