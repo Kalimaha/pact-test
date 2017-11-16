@@ -29,6 +29,16 @@ def run_provider_tests(config):
         write_pact_files(config, test_results.value)
 
 
+def upload_pacts(config, pacts):
+    for pact in pacts:
+        provider = pact['provider']['name']
+        consumer = pact['consumer']['name']
+        payload = json.dumps(pact)
+        ack = upload_pact(provider, consumer, payload, base_url=config.pact_broker_uri)
+        if type(ack) is Left:
+            error(ack.value)
+
+
 def write_pact_files(config, pacts):
     pacts_directory = os.path.join(os.getcwd(), config.pacts_path)
     if not os.path.exists(pacts_directory):

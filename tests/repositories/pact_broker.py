@@ -2,6 +2,7 @@ import requests
 from pact_test.either import *
 from pact_test.repositories.pact_broker import upload_pact
 from pact_test.repositories.pact_broker import next_version
+from pact_test.repositories.pact_broker import format_headers
 from pact_test.repositories.pact_broker import get_latest_version
 
 
@@ -60,3 +61,37 @@ def test_wrong_url():
 
     assert type(latest_version) is Left
     assert latest_version.value == msg
+
+
+def test_format_headers():
+    pact = {
+      "interactions": [
+        {
+          "request": {
+            "headers": [
+                {'spam': 'eggs'},
+                {'Content-Type': 'application/json'}
+            ]
+          },
+          "response": {
+            "headers": [
+                {'spam': 'eggs'},
+                {'Content-Type': 'application/json'}
+            ]
+          }
+        }
+      ]
+    }
+    new_pact = format_headers(pact)
+    expected_request_headers = {
+        'spam': 'eggs',
+        'Content-Type': 'application/json'
+    }
+    expected_response_headers = {
+        'spam': 'eggs',
+        'Content-Type': 'application/json'
+    }
+    request_headers = new_pact['interactions'][0]['request']['headers']
+    response_headers = new_pact['interactions'][0]['response']['headers']
+    assert request_headers == expected_request_headers
+    assert response_headers == expected_response_headers
