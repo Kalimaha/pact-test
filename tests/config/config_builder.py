@@ -14,7 +14,7 @@ def test_default_provider_tests_path():
 
 def test_default_pact_broker_uri():
     config = Config()
-    assert config.pact_broker_uri is None
+    assert config.pact_broker_uri == 'http://localhost:9292/'
 
 
 def test_custom_consumer_tests_path():
@@ -25,7 +25,7 @@ def test_custom_consumer_tests_path():
                                 'consumer_only.json')
 
     config = TestConfig()
-    assert config.pact_broker_uri is None
+    assert config.pact_broker_uri == 'http://localhost:9292/'
     assert config.consumer_tests_path == 'mypath/mytests'
     assert config.provider_tests_path == 'tests/service_providers'
 
@@ -38,7 +38,7 @@ def test_custom_provider_tests_path():
                                 'provider_only.json')
 
     config = TestConfig()
-    assert config.pact_broker_uri is None
+    assert config.pact_broker_uri == 'http://localhost:9292/'
     assert config.provider_tests_path == 'mypath/mytests'
     assert config.consumer_tests_path == 'tests/service_consumers'
 

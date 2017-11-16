@@ -1,5 +1,6 @@
 from pact_test.either import *
 from pact_test.constants import *
+from pact_test.utils.logger import error
 from pact_test.matchers.response_matcher import match
 from pact_test.clients.http_client import execute_interaction_request
 
