@@ -45,3 +45,19 @@ def _path_to_pact_helper(consumer_tests_path):
         msg = MISSING_PACT_HELPER + consumer_tests_path + '".'
         return Left(msg)
     return Right(path)
+
+
+def format_headers(pact):
+    for interaction in pact.get('interactions', []):
+        req_headers = interaction.get('request').get('headers')
+        fixed_req_headers = {}
+        for h in req_headers:
+            fixed_req_headers.update(h)
+        interaction['request']['headers'] = fixed_req_headers
+
+        res_headers = interaction.get('response').get('headers')
+        fixes_req_headers = {}
+        for h in res_headers:
+            fixes_req_headers.update(h)
+        interaction['response']['headers'] = fixes_req_headers
+    return pact

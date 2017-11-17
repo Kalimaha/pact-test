@@ -1,5 +1,5 @@
-from pact_test.utils.logger import *
 from pact_test.either import *
+from pact_test.utils.logger import *
 from pact_test.matchers.matcher import *
 
 

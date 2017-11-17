@@ -50,7 +50,6 @@ def test_execute_interaction_request_text(mocker):
 
     assert response.status == 200
     assert response.headers == [('Date', '12-06-2017')]
-    assert response.body == 'Spam & Eggs'
 
 
 def test_parse_headers():

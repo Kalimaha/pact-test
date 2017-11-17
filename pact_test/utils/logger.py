@@ -23,7 +23,7 @@ def log_consumers_test_results(test_results):
             error(test_results.value.value)
         else:
             for test_result in test_results.value:
-                print()
+                print('')
                 info('Test: ' + test_result.value['test'])
                 for result in test_result.value['results']:
                     if type(result.value) is dict:
@@ -40,7 +40,7 @@ def log_consumers_test_results(test_results):
                         error('  ' + str(result.value))
     info('')
     info('Goodbye!')
-    print()
+    print('')
 
 
 def log_providers_test_results(test_results):
@@ -48,7 +48,7 @@ def log_providers_test_results(test_results):
         error(test_results.value)
     else:
         for r in test_results.value:
-            print()
+            print('')
             info('A pact between ' + r['consumer']['name'] + ' and ' + r['provider']['name'])
             for i in r['interactions']:
                 if i['status'] == 'FAILED':

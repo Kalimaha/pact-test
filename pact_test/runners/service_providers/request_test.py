@@ -1,5 +1,6 @@
-from pact_test.utils.logger import *
+import json
 from pact_test.either import *
+from pact_test.utils.logger import *
 from pact_test.models.request import PactRequest
 from pact_test.models.response import PactResponse
 from pact_test.servers.mock_server import MockServer
@@ -31,12 +32,14 @@ def verify_request(decorated_method, port=9999):
     matching_result = match(actual_request, expected_request)
 
     if type(matching_result) is Right:
+        resp = mock_response.__dict__
+        resp['body'] = json.loads(mock_response.__dict__['body'])
         out = {
             'status': 'PASSED',
             'providerState': decorated_method.given,
             'description': decorated_method.upon_receiving,
             'request': actual_request.__dict__,
-            'response': mock_response.__dict__
+            'response': resp
         }
         return Right(out)
     else:

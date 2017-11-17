@@ -1,5 +1,4 @@
 import json
-from pact_test.utils.logger import debug
 from threading import Thread
 from pact_test.models.response import PactResponse
 try:

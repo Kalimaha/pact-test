@@ -1,6 +1,7 @@
 import requests
 from pact_test.either import *
 from pact_test.constants import *
+from pact_test.utils.logger import *
 from pact_test.models.response import PactResponse
 
 
@@ -12,11 +13,12 @@ def execute_interaction_request(url, port, interaction):
     if type(server_response) is Right:
         headers = _parse_headers(server_response.value)
         content_type = _get_content_type(headers)
-        return Right(PactResponse(
+        out = Right(PactResponse(
             status=server_response.value.status_code,
             headers=headers,
             body=_parse_body(server_response.value, content_type)
         ))
+        return out
 
     return server_response
 
@@ -29,10 +31,7 @@ def _server_response(method, url):
 
 
 def _parse_body(server_response, content_type):
-    if JSON in content_type:
-        return server_response.json()
-    else:
-        return server_response.text()
+    return server_response.json() if JSON in content_type else server_response.text
 
 
 def _parse_headers(server_response):

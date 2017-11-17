@@ -16,7 +16,7 @@ class ServiceConsumerTestSuiteRunner(object):
         self.config = config
 
     def verify(self):
-        print()
+        print('')
         debug('Verify consumers: START')
         pact_helper = load_pact_helper(self.config.consumer_tests_path)
         if type(pact_helper) is Right:
