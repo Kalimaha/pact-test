@@ -49,8 +49,8 @@ def log_providers_test_results(test_results):
                     error('  Given ' + i['providerState'] + ', upon receiving ' + i['description'] + ' from ' + r['consumer']['name'])
                     error('    Status: ' + i['status'])
                     error('    Message: ' + i['message'])
-                    error('    Expected: ' + str(i['expected']))
-                    error('    Actual: ' + str(i['actual']))
+                    error('    Expected: ' + str(i.get('expected')))
+                    error('    Actual: ' + str(i.get('actual')))
                 else:
                     info('')
                     info('  Given ' + i['providerState'] + ', upon receiving ' + i['description'] + ' from ' + r['consumer']['name'] + ' with:')

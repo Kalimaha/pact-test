@@ -17,11 +17,9 @@ def test_missing_request():
     t = MyTest()
     decorated_method = next(t.decorated_methods)
     test_result = verify_request(decorated_method, port)
-    expected_error_message = 'Missing request(s) for "given spam, ' \
-                             'upon receiving eggs"'
 
     assert type(test_result) is Left
-    assert test_result.value == expected_error_message
+    assert test_result.value['status'] == 'FAILED'
 
 
 def test_non_matching_http_method():

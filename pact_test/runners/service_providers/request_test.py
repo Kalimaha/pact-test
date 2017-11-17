@@ -17,7 +17,16 @@ def verify_request(decorated_method, port=9999):
     report = mock_server.report()
 
     if len(report) is 0:
-        return Left('Missing request(s) for "' + format_message(decorated_method) + '"')
+        out = {
+            'status': 'FAILED',
+            'providerState': decorated_method.given,
+            'description': decorated_method.upon_receiving,
+            'message': 'Missing request(s) for "' + format_message(decorated_method) + '"',
+            'expected': expected_request.__dict__,
+            'actual': None
+        }
+        return Left(out)
+
     actual_request = build_actual_request(report[0])
     matching_result = match(actual_request, expected_request)
 

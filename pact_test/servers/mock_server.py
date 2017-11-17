@@ -88,15 +88,11 @@ class MockServer(object):
         ARCHIVE = []
 
     def start(self):
-        debug('STARTING PROXY SERVER...')
         self.server_thread.start()
-        debug('PROXY SERVER LISTENING ON http://' + self.base_url + ':' + str(self.port))
 
     def shutdown(self):
-        debug('SHUTTING DOWN SERVER...')
         self.server.shutdown()
         self.server.server_close()
-        debug('SHUTTING DOWN MOCK SERVER... DONE')
 
     @staticmethod
     def report():
