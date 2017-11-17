@@ -26,12 +26,18 @@ def log_consumers_test_results(test_results):
                 print()
                 info('Test: ' + test_result.value['test'])
                 for result in test_result.value['results']:
-                    info('  GIVEN ' + result.value['state'] + ' UPON RECEIVING ' + result.value['description'])
-                    info('    status: ' + result.value['status'])
-                    for test_error in result.value['errors']:
-                        error('      expected: ' + str(test_error['expected']))
-                        error('      actual:   ' + str(test_error['actual']))
-                        error('      message:  ' + str(test_error['message']))
+                    if type(result.value) is dict:
+                        info('  GIVEN ' + result.value['state'] + ' UPON RECEIVING ' + result.value['description'])
+                        info('    status: ' + result.value['status'])
+                        for test_error in result.value['errors']:
+                            if type(test_error) is dict:
+                                error('      expected: ' + str(test_error['expected']))
+                                error('      actual:   ' + str(test_error['actual']))
+                                error('      message:  ' + str(test_error['message']))
+                            else:
+                                error('      message: ' + str(test_error))
+                    else:
+                        error('  ' + str(result.value))
     info('')
     info('Goodbye!')
     print()
