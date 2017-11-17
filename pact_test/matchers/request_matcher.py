@@ -33,8 +33,6 @@ def _match_dicts_all_keys_and_values(d1, d2):
     d1_keys = d1.keys()
     d2_keys = d2.keys()
 
-    # delete_extra_keys(d1, d2)
-
     all_keys = set(d2_keys).issubset(set(d1_keys))
     all_values = match_dicts_all_values(d1, d2)
 
@@ -54,6 +52,8 @@ def _match_headers(actual, expected):
 
 
 def _match_path(actual, expected):
+    error(actual)
+    error(expected)
     if actual.path == expected.path:
         return Right(actual)
     return Left(build_error_message('path', expected.path, actual.path))

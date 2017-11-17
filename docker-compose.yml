@@ -3,7 +3,7 @@ version: '2.1'
 services:
 
   py27:
-    command: sh -c 'find . -name '*.pyc' -delete && python setup.py test'
+    command: sh -c "find . -name '*.pyc' -delete && python setup.py test"
     volumes:
       - .:/app
     build:
@@ -11,7 +11,7 @@ services:
       dockerfile: '/environments/Dockerfilepy27'
 
   py33:
-    command: sh -c 'find . -name '*.pyc' -delete && python setup.py test'
+    command: sh -c "find . -name '*.pyc' -delete && python setup.py test"
     volumes:
       - .:/app
     build:
@@ -19,7 +19,7 @@ services:
       dockerfile: '/environments/Dockerfilepy33'
 
   py34:
-    command: sh -c 'find . -name '*.pyc' -delete && python setup.py test'
+    command: sh -c "find . -name '*.pyc' -delete && python setup.py test"
     volumes:
       - .:/app
     build:
@@ -27,7 +27,7 @@ services:
       dockerfile: '/environments/Dockerfilepy34'
 
   py35:
-    command: sh -c 'find . -name '*.pyc' -delete && python setup.py test'
+    command: sh -c "find . -name '*.pyc' -delete && python setup.py test"
     volumes:
       - .:/app
     build:
@@ -35,7 +35,7 @@ services:
       dockerfile: '/environments/Dockerfilepy35'
 
   py36:
-    command: sh -c 'find . -name '*.pyc' -delete && python setup.py test'
+    command: sh -c "find . -name '*.pyc' -delete && python setup.py test"
     volumes:
       - .:/app
     build:
