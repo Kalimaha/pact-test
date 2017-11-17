@@ -1,6 +1,10 @@
 from pact_test.either import *
 from pact_test.utils.logger import *
 from pact_test.matchers.matcher import *
+try:
+    import urllib.parse as parse
+except ImportError:
+    import urllib as parse
 
 
 def match(actual, expected):
@@ -52,17 +56,25 @@ def _match_headers(actual, expected):
 
 
 def _match_path(actual, expected):
-    error(actual)
-    error(expected)
     if actual.path == expected.path:
         return Right(actual)
     return Left(build_error_message('path', expected.path, actual.path))
 
 
 def _match_query(actual, expected):
-    if actual.query == expected.query:
+    debug('')
+    debug('')
+    debug(_encode(actual.query))
+    debug(_encode(expected.query))
+    debug('')
+    debug('')
+    if _encode(actual.query) == _encode(expected.query):
         return Right(actual)
     return Left(build_error_message('query', expected.query, actual.query))
+
+
+def _encode(str):
+    return parse.quote(str, safe="%3D")
 
 
 def _match_method(actual, expected):
