@@ -4,7 +4,7 @@ from pact_test.matchers.request_matcher import match
 from tests.acceptance.acceptance_test_loader import load_acceptance_test
 
 
-def test_different_method_case():
+def test():
     data = load_acceptance_test(__file__)
 
     actual = PactRequest(**data['actual'])
