@@ -44,11 +44,11 @@ def _match_dicts_all_keys_and_values(d1, d2):
 
 
 def _match_headers(actual, expected):
-    actual_dict = dict(pair for d in actual.headers for pair in d.items())
-    expected_dict = dict(pair for d in expected.headers for pair in d.items())
+    actual_dict = dict(pair for d in actual.headers for pair in sorted(d.items()))
+    expected_dict = dict(pair for d in expected.headers for pair in sorted(d.items()))
 
-    insensitive_actual = {k.upper(): v for (k, v) in actual_dict.items()}
-    insensitive_expected = {k.upper(): v for (k, v) in expected_dict.items()}
+    insensitive_actual = {k.upper(): v for (k, v) in sorted(actual_dict.items())}
+    insensitive_expected = {k.upper(): v for (k, v) in sorted(expected_dict.items())}
 
     if is_subset(insensitive_expected, insensitive_actual):
         return Right(actual)
@@ -62,12 +62,6 @@ def _match_path(actual, expected):
 
 
 def _match_query(actual, expected):
-    debug('')
-    debug('')
-    debug(_encode(actual.query))
-    debug(_encode(expected.query))
-    debug('')
-    debug('')
     if _encode(actual.query) == _encode(expected.query):
         return Right(actual)
     return Left(build_error_message('query', expected.query, actual.query))
