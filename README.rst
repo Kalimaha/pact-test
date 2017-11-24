@@ -26,7 +26,7 @@ after all!*), and a Provider honours it.
 Providers Tests (*Set the Contracts*)
 -------------------------------------
 
-.. image:: https://img.shields.io/badge/Pact-1.0-red.svg
+.. image:: https://img.shields.io/badge/Pact-1.0-brightgreen.svg
     :target: https://github.com/pact-foundation/pact-specification/tree/version-1
 .. image:: https://img.shields.io/badge/Pact-1.1-red.svg
     :target: https://github.com/pact-foundation/pact-specification/tree/version-1.1
@@ -37,7 +37,28 @@ Providers Tests (*Set the Contracts*)
 .. image:: https://img.shields.io/badge/Pact-4.0-red.svg
     :target: https://github.com/pact-foundation/pact-specification/tree/version-4
 
-TBD.
+Consumers run Provider Tests to create pacts and establish a contract between
+them and service providers. An example of a Python client using pact test is
+available at `here <https://github.com/Kalimaha/PythonEats>`_. Consumers define
+all the interactions with their providers in the following way:
+
+.. code:: python
+
+  @service_consumer('UberEats')
+  @has_pact_with('Dominos Pizza')
+  class DominosPizzaTest(ServiceProviderTest):
+
+      @given('some pizza exist')
+      @upon_receiving('a request for an hawaiian pizza')
+      @with_request({'method': 'get', 'path': '/pizzas/hawaiian/'})
+      @will_respond_with({'status': 404, 'body': json.dumps({'reason': 'we do not serve pineapple with pizza'})})
+      def test_get_pizza(self):
+          pizza = get_pizza('hawaiian')
+          assert pizza.status_code == 404
+
+This test verifies, against a mock server, the expected interaction and creates
+a JSON file (*the pact*) that will be stored locally and also sent to the
+Pact Broker, if available.
 
 Consumers Tests (*Honour Your Contracts*)
 -----------------------------------------
