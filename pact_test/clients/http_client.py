@@ -1,3 +1,4 @@
+import json
 import requests
 from pact_test.either import *
 from pact_test.constants import *
@@ -8,7 +9,9 @@ from pact_test.models.response import PactResponse
 def execute_interaction_request(url, port, interaction):
     url = _build_url(url, port, interaction)
     method = interaction[REQUEST].get('method', 'GET')
-    server_response = _server_response(method, url=url)
+    body = interaction[REQUEST].get('body', {})
+    headers = interaction[REQUEST].get('headers', {})
+    server_response = _server_response(method, url=url, body=body, headers=headers)
 
     if type(server_response) is Right:
         headers = _parse_headers(server_response.value)
@@ -23,9 +26,10 @@ def execute_interaction_request(url, port, interaction):
     return server_response
 
 
-def _server_response(method, url):
+def _server_response(method, url, body, headers):
     try:
-        return Right(requests.request(method, url=url))
+        payload = json.dumps(body)
+        return Right(requests.request(method, url=url, data=payload, headers=headers))
     except Exception as e:
         return Left(str(e))
 
