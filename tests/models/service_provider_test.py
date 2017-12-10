@@ -5,6 +5,7 @@ from pact_test import upon_receiving
 from pact_test import service_consumer
 from pact_test import will_respond_with
 from pact_test import ServiceProviderTest
+from pact_test.either import *
 
 
 def test_default_service_consumer_value():
@@ -96,3 +97,12 @@ def test_missing_has_pact_with():
 
     msg = 'Missing setup for "has_pact_with"'
     assert MyTest().is_valid().value.startswith(msg)
+
+
+def test_valid_test():
+    @service_consumer('Spam')
+    @has_pact_with('Eggs')
+    class MyTest(ServiceProviderTest):
+        pass
+
+    assert type(MyTest().is_valid()) is Right

@@ -33,7 +33,7 @@ def verify_request(decorated_method, port=9999):
 
     if type(matching_result) is Right:
         resp = mock_response.__dict__
-        resp['body'] = json.loads(mock_response.__dict__['body'])
+        resp['body'] = mock_response.__dict__['body']
         out = {
             'status': 'PASSED',
             'providerState': decorated_method.given,
