@@ -1,10 +1,10 @@
 from pact_test.either import *
 from pact_test.utils.logger import *
 from pact_test.matchers.matcher import *
-try:
-    import urllib.parse as parse
-except ImportError:
-    import urllib as parse
+try:                                # pragma: no cover
+    import urllib.parse as parse    # pragma: no cover
+except ImportError:                 # pragma: no cover
+    import urllib as parse          # pragma: no cover
 
 
 def match(actual, expected):

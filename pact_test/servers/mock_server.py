@@ -1,12 +1,12 @@
 import json
 from threading import Thread
 from pact_test.models.response import PactResponse
-try:
-    import socketserver as SocketServer
-    import http.server as SimpleHTTPServer
-except ImportError:
-    import SocketServer
-    import SimpleHTTPServer
+try:                                            # pragma: no cover
+    import socketserver as SocketServer         # pragma: no cover
+    import http.server as SimpleHTTPServer      # pragma: no cover
+except ImportError:                             # pragma: no cover
+    import SocketServer                         # pragma: no cover
+    import SimpleHTTPServer                     # pragma: no cover
 
 
 ARCHIVE = []
@@ -64,7 +64,7 @@ def build_proxy(mock_response=PactResponse()):
                 for key, value in header.items():
                     self.send_header(key, value)
             self.end_headers()
-            self.wfile.write(str(mock_response.body).encode())
+            self.wfile.write(str(mock_response.body).replace("'", '"').encode())
 
     return Proxy
 
