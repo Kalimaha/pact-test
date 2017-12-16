@@ -6,6 +6,46 @@ from pact_test.repositories.pact_broker import format_headers
 from pact_test.repositories.pact_broker import get_latest_version
 
 
+def test_current_version_error(mocker):
+
+    class GetResponse(object):
+        status_code = 200
+
+        def json(self):
+            raise requests.exceptions.ConnectionError('Boom!')
+
+    mocker.patch.object(requests, 'put', lambda x, **kwargs:
+                        PutResponse())
+    mocker.patch.object(requests, 'get', lambda x, **kwargs:
+                        GetResponse())
+
+    out = upload_pact('provider', 'consumer', {})
+    assert type(out) is Left
+
+
+def test_connection_error(mocker):
+
+    class GetResponse(object):
+        status_code = 200
+
+        def json(self):
+            return {'_embedded': {'versions': [{'number': '1.0.41'}]}}
+
+    class PutResponse(object):
+        status_code = 200
+
+        def json(self):
+            raise requests.exceptions.ConnectionError('Boom!')
+
+    mocker.patch.object(requests, 'put', lambda x, **kwargs:
+                        PutResponse())
+    mocker.patch.object(requests, 'get', lambda x, **kwargs:
+                        GetResponse())
+
+    out = upload_pact('provider', 'consumer', {})
+    assert type(out) is Left
+
+
 def test_upload_pact(mocker):
     class GetResponse(object):
         status_code = 200
