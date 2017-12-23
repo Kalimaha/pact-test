@@ -1,5 +1,20 @@
 import requests
+from pact_test.models.response import PactResponse
 from pact_test.servers.mock_server import MockServer
+
+
+def test_response_with_headers():
+    r = PactResponse(headers=[{'spam': 'eggs'}])
+    s = MockServer(port=1234, mock_response=r)
+    s.start()
+    response = requests.get('http://localhost:1234/')
+    s.shutdown()
+    stored_request = s.report()[0]
+    custom_header = False
+    for h in response.headers:
+        if 'spam' in h:
+            custom_header = True
+    assert custom_header is True
 
 
 def test_no_requests():
