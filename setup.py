@@ -16,7 +16,9 @@ setup(
         'pytest>=3.0',
         'pytest-pep8',
         'pytest-sugar',
-        'pytest-mock'
+        'pytest-mock',
+        'pytest-cov',
+        'pytest-runner'
     ],
     url='https://github.com/Kalimaha/pact-test/',
     scripts=['bin/pact-test'],
