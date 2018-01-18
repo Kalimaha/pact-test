@@ -3,7 +3,7 @@ from setuptools import find_packages
 
 setup(
     name='pact-test',
-    version='0.3.102',
+    version='1.0.3',
     author='Guido Barbaglia',
     author_email='guido.barbaglia@gmail.com',
     packages=find_packages(),

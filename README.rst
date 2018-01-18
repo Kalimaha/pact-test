@@ -21,7 +21,17 @@ Consumer Driven Contracts Testing. For further information about Pact project, c
 useful resources please refer to the `Pact website <http://pact.io/>`_.
 
 There are two phases in Consumer Driven Contracts Testing: a Consumer sets up a contract (*it's consumer driven
-after all!*), and a Provider honours it.
+after all!*), and a Provider honours it. But, before that...
+
+Installation
+~~~~~~~~~~~~
+
+Pact Test is distributed through `PyPi <https://pypi.python.org/pypi/pact-test>`_ so it can be easily included in the
+:code:`requirements.txt` file or normally installed with :code:`pip`:
+
+.. code:: bash
+
+  $ pip install pact-test
 
 Providers Tests (*Set the Contracts*)
 -------------------------------------
@@ -44,21 +54,35 @@ all the interactions with their providers in the following way:
 
 .. code:: python
 
-  @service_consumer('UberEats')
-  @has_pact_with('Dominos Pizza')
-  class DominosPizzaTest(ServiceProviderTest):
+    @service_consumer('PythonEats')
+    @has_pact_with('PyzzaHut')
+    class PyzzaHutTest(ServiceProviderTest):
 
-      @given('some pizza exist')
-      @upon_receiving('a request for an hawaiian pizza')
-      @with_request({'method': 'get', 'path': '/pizzas/hawaiian/'})
-      @will_respond_with({'status': 404, 'body': json.dumps({'reason': 'we do not serve pineapple with pizza'})})
-      def test_get_pizza(self):
-          pizza = get_pizza('hawaiian')
-          assert pizza.status_code == 404
+        @given('some pizzas exist')
+        @upon_receiving('a request for a pepperoni pizza')
+        @with_request({'method': 'get', 'path': '/pizzas/pepperoni/'})
+        @will_respond_with({'status': 200, 'body': {'id': 42, 'type': 'pepperoni'}})
+        def test_get_pepperoni_pizza(self):
+            pizza = get_pizza('pepperoni')
+            assert pizza['id'] == 42
+            assert pizza['type'] == 'pepperoni'
 
 This test verifies, against a mock server, the expected interaction and creates
 a JSON file (*the pact*) that will be stored locally and also sent to the
-Pact Broker, if available.
+Pact Broker, if available. It is possible to define multiple tests for the same
+state in order to verify all the scenarios of interest, For example, we can
+test an unhappy :code:`404` situation:
+
+.. code:: python
+
+    @given('some pizzas exist')
+    @upon_receiving('a request for an hawaiian pizza')
+    @with_request({'method': 'get', 'path': '/pizzas/hawaiian/'})
+    @will_respond_with({'status': 404, 'body': {'message': 'we do not serve pineapple with pizza'}})
+    def test_get_hawaiian_pizza(self):
+        pizza = get_pizza('hawaiian')
+        assert pizza.status_code == 404
+        assert pizza.json()['message'] == 'we do not serve pineapple with pizza'
 
 Consumers Tests (*Honour Your Contracts*)
 -----------------------------------------
@@ -82,16 +106,6 @@ of an hypothetical restaurant service implemented with the most popular Python w
 * `Pyramid <https://github.com/Kalimaha/restaurant-service-pyramid>`_
 
 There are few things required to setup and run consumer tests.
-
-Installation
-~~~~~~~~~~~~
-
-Pact Test is distributed through `PyPi <https://pypi.python.org/pypi/pact-test>`_ so it can be easily included in the
-:code:`requirements.txt` file or normally installed with :code:`pip`:
-
-.. code:: bash
-
-  $ pip install pact-test
 
 Pact Helper
 ~~~~~~~~~~~
@@ -171,14 +185,14 @@ Development
 ===========
 
 Setup
------
+~~~~~
 
 .. code:: bash
 
   python3 setup.py install
 
 Test
-----
+~~~~
 
 It is possible to run the tests locally with Docker through the following command:
 
@@ -200,7 +214,7 @@ possible to test all the versions at once with:
   $ ./bin/test all
 
 Upload New Version
-------------------
+~~~~~~~~~~~~~~~~~~
 
 .. code:: bash
 
