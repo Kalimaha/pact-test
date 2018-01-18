@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from pact_test.runners.pact_tests_runner import verify
+
+
+def print_help():
+    print('                                                        ')
+    print('========================================================')
+    print('            Welcome to Pact Test for Python!            ')
+    print('--------------------------------------------------------')
+    print('                   Available Commands                   ')
+    print('                                                        ')
+    print('help..............................Display this help page')
+    print('verify.............................Verify all Pact tests')
+    print('verify consumers..............Verify Consumer Pact tests')
+    print('verify providers..............Verify Provider Pact tests')
+    print('========================================================')
+    print('                                                        ')
+
+
+if len(sys.argv) is 1:
+    print_help()
+else:
+    if sys.argv[1].lower() == 'verify':
+        if len(sys.argv) is 2:
+            verify(verify_consumers=True, verify_providers=True)
+        elif sys.argv[2].lower() == 'consumers':
+            verify(verify_consumers=True, verify_providers=False)
+        elif sys.argv[2].lower() == 'providers':
+            verify(verify_consumers=False, verify_providers=True)
+        else:
+            print_help()
+    elif sys.argv[1].lower() == 'help':
+        print_help()
+    else:
+        print_help()

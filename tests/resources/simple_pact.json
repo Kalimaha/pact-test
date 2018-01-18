@@ -1,0 +1,38 @@
+{
+  "provider": {
+    "name": "Restaurant"
+  },
+  "consumer": {
+    "name": "Consumer"
+  },
+  "interactions": [
+    {
+      "providerState" : "a menu exists",
+      "description": "a request for an item on the menu",
+      "request": {
+        "method": "GET",
+        "path": "/menu/42",
+        "query": ""
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json",
+          "Pragma": "no-cache"
+        },
+        "body": {
+          "name": "Spam, Eggs and Bacon",
+          "ingredients": ["spam", "eggs", "bacon"]
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pact-specification": {
+      "version": "1.0.0"
+    },
+    "pact-jvm": {
+      "version": "1.0.0"
+    }
+  }
+}

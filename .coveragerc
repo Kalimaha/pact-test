@@ -1,0 +1,3 @@
+[run]
+omit = pact_test/utils/logger.py
+

@@ -1,1 +1,7 @@
+requests
 pytest>=3.0
+pytest-pep8
+pytest-cov
+pytest-mock
+pytest-sugar
+pytest-runner
