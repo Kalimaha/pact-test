@@ -41,3 +41,19 @@ services:
     build:
       context: .
       dockerfile: '/environments/Dockerfilepy36'
+
+  py37:
+    command: sh -c "find . -name '*.pyc' -delete && python setup.py test"
+    volumes:
+      - .:/app
+    build:
+      context: .
+      dockerfile: '/environments/Dockerfilepy37'
+
+  py38:
+    command: sh -c "find . -name '*.pyc' -delete && python setup.py test"
+    volumes:
+      - .:/app
+    build:
+      context: .
+      dockerfile: '/environments/Dockerfilepy38'
