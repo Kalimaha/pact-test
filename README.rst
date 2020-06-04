@@ -1,6 +1,6 @@
 .. image:: https://img.shields.io/badge/license-MIT-brightgreen.svg
     :target: https://github.com/Kalimaha/pact-test/blob/master/LICENSE
-.. image:: https://img.shields.io/badge/python-2.7,%203.3,%203.4,%203.5,%203.6-brightgreen.svg
+.. image:: https://img.shields.io/badge/python-2.7,%203.3,%203.4,%203.5,%203.6,%203.7,%203.8-brightgreen.svg
     :target: https://travis-ci.org/Kalimaha/pact-test
 .. image:: https://img.shields.io/badge/pypi-0.1.1-brightgreen.svg
     :target: https://pypi.python.org/pypi?:action=display&name=pact-test&version=0.1.1
@@ -206,8 +206,8 @@ By default this command tests the library against Python 3.6. It is possible to 
 
   $ ./bin/test <ENV>
 
-Available values for `ENV` are: :code:`py27`, :code:`py33`, :code:`py34`, :code:`py35` and :code:`py36`. It is also
-possible to test all the versions at once with:
+Available values for `ENV` are: :code:`py27`, :code:`py33`, :code:`py34`, :code:`py35` :code:`py36`, :code:`py37` and
+:code:`py38`. It is also possible to test all the versions at once with:
 
 .. code:: bash
 
